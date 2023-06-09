@@ -1,9 +1,11 @@
 package climbing.ba.nocomment
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import climbing.ba.nocomment.model.Member
+import climbing.ba.nocomment.navigation.Navigation
 import climbing.ba.nocomment.sealed.DataState
 import climbing.ba.nocomment.ui.theme.NoCommentTheme
 import climbing.ba.nocomment.viewmodels.AdvancedJuniorsView
@@ -25,101 +28,16 @@ import com.google.firebase.database.*
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel: AdvancedJuniorsView by viewModels()
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //FirebaseApp.initializeApp(this);
 
         setContent {
             NoCommentTheme {
-                Column {
-                    TopAppBar(
-                        title = {
-                            Text(text = "Junior group payments")
-                        }, backgroundColor = Color.Black,
-                        contentColor = Color.White
-
-                    )
-
-                    SetData(viewModel)
-
+                val lifecycleOwner = this
+                Navigation(applicationContext, lifecycleOwner = lifecycleOwner)
                 }
             }
         }
     }
 
-    @Composable
-    fun SetData(viewModel: AdvancedJuniorsView) {
-        when (val result = viewModel.response.value) {
-            is DataState.Loading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
-            is DataState.Success -> {
-                ShowLazyList(result.data)
-            }
-            is DataState.Failure -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = result.message,
-                        fontSize = MaterialTheme.typography.h5.fontSize,
-                    )
-                }
-            }
-            else -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Error Fetching data",
-                        fontSize = MaterialTheme.typography.h5.fontSize,
-                    )
-                }
-            }
-        }
-    }
-
-    @Composable
-    fun ShowLazyList(members: MutableList<Member>) {
-        LazyColumn {
-            items(members) { member ->
-                CardItem(member)
-            }
-        }
-    }
-
-    @Composable
-    fun CardItem(member: Member) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(150.dp)
-                .padding(10.dp)
-        ) {
-
-            Box(modifier = Modifier.fillMaxSize()) {
-
-                Text(
-                    text = member.fullName!!,
-                    fontSize = MaterialTheme.typography.h5.fontSize,
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .fillMaxWidth()
-                        .background(Color.LightGray),
-                    textAlign = TextAlign.Center,
-                    color = Color.White
-                )
-            }
-
-        }
-    }
-
-}
