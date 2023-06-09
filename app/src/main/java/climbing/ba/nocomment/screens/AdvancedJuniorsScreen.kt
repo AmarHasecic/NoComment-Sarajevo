@@ -7,25 +7,68 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import climbing.ba.nocomment.database.fetchData
 import climbing.ba.nocomment.model.Member
 import climbing.ba.nocomment.sealed.DataState
-import climbing.ba.nocomment.viewmodels.AdvancedJuniorsView
 
 
 @Composable
 fun AdvancedJuniorsScreen(navController: NavController) {
-    val viewModel: AdvancedJuniorsView = viewModel() // Obtain the viewModel instance
+
+    val dataState = remember { mutableStateOf<DataState>(DataState.Loading) }
+
+    LaunchedEffect(Unit) {
+        dataState.value = fetchData()
+    }
+
+    when (val state = dataState.value) {
+        is DataState.Success -> {
+            val memberList = state.data
+            ShowLazyList(state.data)
+        }
+        is DataState.Failure -> {
+            val errorMessage = state.message
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = errorMessage,
+                    fontSize = MaterialTheme.typography.h5.fontSize,
+                )
+            }
+        }
+        DataState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+        DataState.Empty -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Nema dodanih članova kluba",
+                    fontSize = MaterialTheme.typography.h5.fontSize,
+                )
+            }
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        SetData(viewModel)
+
+
 
         // Circular plus floating button
         FloatingActionButton(
@@ -44,44 +87,6 @@ fun AdvancedJuniorsScreen(navController: NavController) {
 }
 
 
-@Composable
-fun SetData(viewModel: AdvancedJuniorsView) {
-    when (val result = viewModel.response.value) {
-        is DataState.Loading -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        }
-        is DataState.Success -> {
-            ShowLazyList(result.data)
-        }
-        is DataState.Failure -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = result.message,
-                    fontSize = MaterialTheme.typography.h5.fontSize,
-                )
-            }
-        }
-        else -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "Error Fetching data",
-                    fontSize = MaterialTheme.typography.h5.fontSize,
-                )
-            }
-        }
-    }
-}
 
 @Composable
 fun ShowLazyList(members: MutableList<Member>) {

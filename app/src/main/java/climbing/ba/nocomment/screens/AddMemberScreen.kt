@@ -1,5 +1,7 @@
 package climbing.ba.nocomment.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -14,11 +16,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import climbing.ba.nocomment.database.addMemberToDatabase
+import climbing.ba.nocomment.model.Member
+import climbing.ba.nocomment.model.Payment
+import java.time.Month
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AddMemberScreen(navController: NavController) {
 
     val fullName = remember { mutableStateOf("") }
+    val context = androidx.compose.ui.platform.LocalContext.current
 
     Column(
         modifier = Modifier
@@ -46,9 +54,23 @@ fun AddMemberScreen(navController: NavController) {
                 val name = fullName.value
 
                 if (name.isNotEmpty()) {
-                    // Perform desired action with form data
-                    // For example, save the member to a database
-                    // or navigate to another screen
+
+                    var payments = listOf(Payment(0,Month.JANUARY),
+                        Payment( 0,Month.FEBRUARY),
+                        Payment( 0,Month.MARCH),
+                        Payment(0,Month.APRIL),
+                        Payment( 0,Month.MAY),
+                        Payment( 0,Month.JUNE),
+                        Payment( 0,Month.JULY),
+                        Payment( 0,Month.AUGUST),
+                        Payment( 0,Month.SEPTEMBER),
+                        Payment(  0,Month.OCTOBER),
+                        Payment(0,  Month.NOVEMBER),
+                        Payment(0,  Month.DECEMBER)
+                    )
+                    var member: Member = Member(name,payments)
+
+                    addMemberToDatabase(member, context)
                 }
             },
             modifier = Modifier

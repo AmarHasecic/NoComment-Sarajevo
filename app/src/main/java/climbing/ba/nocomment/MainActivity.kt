@@ -22,7 +22,6 @@ import climbing.ba.nocomment.model.Member
 import climbing.ba.nocomment.navigation.Navigation
 import climbing.ba.nocomment.sealed.DataState
 import climbing.ba.nocomment.ui.theme.NoCommentTheme
-import climbing.ba.nocomment.viewmodels.AdvancedJuniorsView
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.*
 
@@ -31,6 +30,7 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
 
         setContent {
             NoCommentTheme {
