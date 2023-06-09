@@ -4,16 +4,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import climbing.ba.nocomment.model.Member
 import climbing.ba.nocomment.sealed.DataState
@@ -22,9 +22,25 @@ import climbing.ba.nocomment.viewmodels.AdvancedJuniorsView
 
 @Composable
 fun AdvancedJuniorsScreen(navController: NavController) {
+    val viewModel: AdvancedJuniorsView = viewModel() // Obtain the viewModel instance
 
-   // val viewModel: AdvancedJuniorsView by viewModels()
-    //SetData(viewModel)
+    Box(modifier = Modifier.fillMaxSize()) {
+        SetData(viewModel)
+
+        // Circular plus floating button
+        FloatingActionButton(
+            onClick = {
+                navController.navigate("AddMemberScreen")
+            },
+            modifier = Modifier
+                .padding(16.dp)
+                .align(Alignment.BottomEnd),
+            backgroundColor = Color(0xFF0EA570)
+
+        ) {
+            Icon(Icons.Default.Add, contentDescription = "Add")
+        }
+    }
 }
 
 

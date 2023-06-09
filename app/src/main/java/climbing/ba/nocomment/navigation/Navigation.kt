@@ -9,6 +9,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import climbing.ba.nocomment.screens.AddMemberScreen
 import climbing.ba.nocomment.screens.AdvancedJuniorsScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -30,6 +31,12 @@ fun Navigation(
             route = Screen.AdvancedJuniorsScreen.route
         ) {
             AdvancedJuniorsScreen(navController = navController)
+        }
+
+        composable(
+            route = Screen.AddMemberScreen.route
+        ) {
+            AddMemberScreen(navController =navController)
         }
 
     }

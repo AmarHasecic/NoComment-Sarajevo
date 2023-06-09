@@ -4,4 +4,5 @@ sealed class Screen (val route : String){
 
     object MainScreen : Screen("MainPage")
     object AdvancedJuniorsScreen : Screen("AdvancedJuniorsScreen")
+    object AddMemberScreen : Screen("AddMemberScreen")
 }

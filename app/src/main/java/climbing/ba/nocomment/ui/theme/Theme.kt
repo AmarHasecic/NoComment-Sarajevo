@@ -5,27 +5,32 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
-    primary = Purple200,
-    primaryVariant = Purple700,
-    secondary = Teal200
+    primary = Color(0xFF3C3131),
+    primaryVariant = Color(0xFF868282),
+    secondary = Color(0xFF000000),
+    background = Color.White,
+    surface = Color.DarkGray,
+    onPrimary = Color.Black,
+    onSecondary = Color.Black,
+    onBackground = Color.White,
+    onSurface = Color.Black
 )
 
 private val LightColorPalette = lightColors(
-    primary = Purple500,
-    primaryVariant = Purple700,
-    secondary = Teal200
-
-    /* Other default colors to override
+    primary = Color(0xFF2E1F1F),
+    primaryVariant = Color(0xFF868282),
+    secondary = Color(0xFF000000),
     background = Color.White,
-    surface = Color.White,
-    onPrimary = Color.White,
+    surface = Color.DarkGray,
+    onPrimary = Color.Black,
     onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
-    */
+    onBackground = Color.White,
+    onSurface = Color.Black
 )
+
 
 @Composable
 fun NoCommentTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
