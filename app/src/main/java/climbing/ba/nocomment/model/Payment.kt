@@ -5,7 +5,7 @@ import androidx.annotation.RequiresApi
 import java.time.Month
 
 data class Payment(
-    val amount: Int,
+    var amount: Int,
     val month: Month
 ){
     @RequiresApi(Build.VERSION_CODES.O)

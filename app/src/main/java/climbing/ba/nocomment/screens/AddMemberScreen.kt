@@ -68,7 +68,7 @@ fun AddMemberScreen(navController: NavController) {
                         Payment(0,  Month.NOVEMBER),
                         Payment(0,  Month.DECEMBER)
                     )
-                    var member: Member = Member(name,payments)
+                    var member: Member = Member("",name,payments)
 
                     addMemberToDatabase(member, context)
                 }

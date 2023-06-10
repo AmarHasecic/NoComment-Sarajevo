@@ -49,16 +49,34 @@ suspend fun fetchData(): DataState {
 }
 
 fun addMemberToDatabase(member: Member, context: Context) {
-
     val databaseReference = FirebaseDatabase.getInstance().reference
     val memberReference = databaseReference.child("members").push() // Generate a unique key for the member
+    val memberId = memberReference.key // Get the generated ID
+
+    if (memberId != null) {
+        member.id = memberId
+    } // Assign the generated ID to the member object
 
     memberReference.setValue(member)
         .addOnSuccessListener {
-                makeToast(context, "Member added successfully")
+            makeToast(context, member.fullName + " upisan u klub")
         }
         .addOnFailureListener { exception ->
             makeToast(context, "Error: ${exception.message}")
         }
 }
+
+fun updateMember(member: Member, context: Context) {
+    val databaseReference = FirebaseDatabase.getInstance().reference
+    val memberReference = databaseReference.child("members").child(member.id)
+
+    memberReference.setValue(member)
+        .addOnSuccessListener {
+            makeToast(context, "Uspješno plaćena članarina")
+        }
+        .addOnFailureListener { exception ->
+            makeToast(context, "Error: ${exception.message}")
+        }
+}
+
 

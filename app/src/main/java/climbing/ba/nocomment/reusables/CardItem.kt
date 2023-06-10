@@ -1,5 +1,7 @@
 package climbing.ba.nocomment.reusables
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import climbing.ba.nocomment.model.Member
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CardItem(member: Member) {
     Card(
@@ -40,7 +43,7 @@ fun CardItem(member: Member) {
         }
     }
 }
-
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ButtonGrid(member: Member) {
     val buttonColors = remember {
@@ -48,6 +51,13 @@ fun ButtonGrid(member: Member) {
             Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242),
             Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242)
         )
+    }
+
+    // Update buttonColors based on member's payments
+    member.payments.forEach { payment ->
+        val monthIndex = payment.month.value-1
+            buttonColors[monthIndex] = if (payment.amount > 0) Color.Green else Color(0xFFEB4242)
+
     }
 
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -60,7 +70,10 @@ fun ButtonGrid(member: Member) {
                         .padding(4.dp)
                         .background(color)
                         .clickable {
-                            buttonColors[index] = if (color == Color.LightGray) Color.Green else Color.LightGray
+                            buttonColors[index] = if (color == Color(0xFFEB4242)) Color.Green else Color(0xFFEB4242)
+                            // Update payment amount based on button click
+                            member.payments[index].amount = if (color == Color(0xFFEB4242)) 50 else 0
+
                         }
                 ) {
                     Text(
@@ -82,7 +95,11 @@ fun ButtonGrid(member: Member) {
                         .padding(4.dp)
                         .background(color)
                         .clickable {
-                            buttonColors[index + 6] = if (color == Color.LightGray) Color.Green else Color.LightGray
+                            buttonColors[index + 6] = if (color == Color(0xFFEB4242)) Color.Green else Color(0xFFEB4242)
+                            // Update payment amount based on button click
+                            val monthIndex = index + 6
+                            member.payments[monthIndex].amount = if (color == Color(0xFFEB4242)) 50 else 0
+
                         }
                 ) {
                     Text(
@@ -97,6 +114,7 @@ fun ButtonGrid(member: Member) {
         Spacer(modifier = Modifier.height(8.dp))
     }
 }
+
 
 
 val monthNames = listOf(
