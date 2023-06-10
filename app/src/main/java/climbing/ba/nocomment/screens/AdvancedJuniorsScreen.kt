@@ -1,20 +1,19 @@
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import climbing.ba.nocomment.database.fetchData
-import climbing.ba.nocomment.model.Member
+import climbing.ba.nocomment.reusables.SearchBar
+import climbing.ba.nocomment.reusables.ShowLazyList
 import climbing.ba.nocomment.sealed.DataState
 
 @Composable
@@ -87,58 +86,4 @@ fun AdvancedJuniorsScreen(navController: NavController) {
             Icon(Icons.Default.Add, contentDescription = "Add")
         }
     }
-}
-
-@Composable
-fun ShowLazyList(members: List<Member>) {
-    LazyColumn {
-        items(members) { member ->
-            CardItem(member)
-        }
-    }
-}
-
-@Composable
-fun CardItem(member: Member) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(150.dp)
-            .padding(10.dp)
-    ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Text(
-                text = member.fullName!!,
-                fontSize = MaterialTheme.typography.h5.fontSize,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .background(Color.LightGray),
-                textAlign = TextAlign.Center,
-                color = Color.White
-            )
-        }
-    }
-}
-
-@Composable
-fun SearchBar(
-    query: String,
-    onQueryChange: (String) -> Unit
-) {
-    TextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        value = query,
-        onValueChange = onQueryChange,
-        placeholder = { Text("Search") },
-        leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
-        singleLine = true,
-        colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = Color.White,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
-        )
-    )
 }
