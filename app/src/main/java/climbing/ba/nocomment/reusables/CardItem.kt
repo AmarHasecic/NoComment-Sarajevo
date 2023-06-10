@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import climbing.ba.nocomment.database.updateMember
 import climbing.ba.nocomment.model.Member
 
 
@@ -46,6 +47,8 @@ fun CardItem(member: Member) {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ButtonGrid(member: Member) {
+
+    val context = androidx.compose.ui.platform.LocalContext.current
     val buttonColors = remember {
         mutableStateListOf(
             Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242),
@@ -74,6 +77,8 @@ fun ButtonGrid(member: Member) {
                             // Update payment amount based on button click
                             member.payments[index].amount = if (color == Color(0xFFEB4242)) 50 else 0
 
+                            updateMember(member, context)
+
                         }
                 ) {
                     Text(
@@ -99,6 +104,8 @@ fun ButtonGrid(member: Member) {
                             // Update payment amount based on button click
                             val monthIndex = index + 6
                             member.payments[monthIndex].amount = if (color == Color(0xFFEB4242)) 50 else 0
+
+                            updateMember(member, context)
 
                         }
                 ) {

@@ -69,10 +69,11 @@ fun addMemberToDatabase(member: Member, context: Context) {
 fun updateMember(member: Member, context: Context) {
     val databaseReference = FirebaseDatabase.getInstance().reference
     val memberReference = databaseReference.child("members").child(member.id)
+    member.id = memberReference.key.toString()
 
     memberReference.setValue(member)
         .addOnSuccessListener {
-            makeToast(context, "Uspješno plaćena članarina")
+            makeToast(context, "Uspješan update članarine")
         }
         .addOnFailureListener { exception ->
             makeToast(context, "Error: ${exception.message}")
