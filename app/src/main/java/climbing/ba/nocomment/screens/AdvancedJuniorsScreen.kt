@@ -1,5 +1,3 @@
-package climbing.ba.nocomment.screens
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -7,6 +5,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,11 +17,10 @@ import climbing.ba.nocomment.database.fetchData
 import climbing.ba.nocomment.model.Member
 import climbing.ba.nocomment.sealed.DataState
 
-
 @Composable
 fun AdvancedJuniorsScreen(navController: NavController) {
-
     val dataState = remember { mutableStateOf<DataState>(DataState.Loading) }
+    val searchQuery = remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
         dataState.value = fetchData()
@@ -31,7 +29,15 @@ fun AdvancedJuniorsScreen(navController: NavController) {
     when (val state = dataState.value) {
         is DataState.Success -> {
             val memberList = state.data
-            ShowLazyList(state.data)
+            Column {
+                SearchBar(searchQuery.value) { newQuery ->
+                    searchQuery.value = newQuery
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                ShowLazyList(memberList.filter { member ->
+                    member.fullName?.contains(searchQuery.value, ignoreCase = true) == true
+                })
+            }
         }
         is DataState.Failure -> {
             val errorMessage = state.message
@@ -67,9 +73,6 @@ fun AdvancedJuniorsScreen(navController: NavController) {
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-
-
-
         // Circular plus floating button
         FloatingActionButton(
             onClick = {
@@ -86,10 +89,8 @@ fun AdvancedJuniorsScreen(navController: NavController) {
     }
 }
 
-
-
 @Composable
-fun ShowLazyList(members: MutableList<Member>) {
+fun ShowLazyList(members: List<Member>) {
     LazyColumn {
         items(members) { member ->
             CardItem(member)
@@ -105,9 +106,7 @@ fun CardItem(member: Member) {
             .height(150.dp)
             .padding(10.dp)
     ) {
-
         Box(modifier = Modifier.fillMaxSize()) {
-
             Text(
                 text = member.fullName!!,
                 fontSize = MaterialTheme.typography.h5.fontSize,
@@ -119,6 +118,27 @@ fun CardItem(member: Member) {
                 color = Color.White
             )
         }
-
     }
+}
+
+@Composable
+fun SearchBar(
+    query: String,
+    onQueryChange: (String) -> Unit
+) {
+    TextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        value = query,
+        onValueChange = onQueryChange,
+        placeholder = { Text("Search") },
+        leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
+        singleLine = true,
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = Color.White,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+        )
+    )
 }

@@ -1,5 +1,6 @@
 package climbing.ba.nocomment.navigation
 
+import AdvancedJuniorsScreen
 import MainScreen
 import android.content.Context
 import android.os.Build
@@ -10,7 +11,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import climbing.ba.nocomment.screens.AddMemberScreen
-import climbing.ba.nocomment.screens.AdvancedJuniorsScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
