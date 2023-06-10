@@ -31,22 +31,22 @@ fun CardItem(member: Member) {
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth()
-                        .background(Color.LightGray),
+                        .background(Color(0xFF0EA570)),
                     textAlign = TextAlign.Center,
                     color = Color.White
                 )
-                ButtonGrid(member.fullName)
+                ButtonGrid(member)
             }
         }
     }
 }
 
 @Composable
-fun ButtonGrid(memberName: String) {
+fun ButtonGrid(member: Member) {
     val buttonColors = remember {
         mutableStateListOf(
-            Color.LightGray, Color.LightGray, Color.LightGray, Color.LightGray, Color.LightGray, Color.LightGray,
-            Color.LightGray, Color.LightGray, Color.LightGray, Color.LightGray, Color.LightGray, Color.LightGray
+            Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242),
+            Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242)
         )
     }
 

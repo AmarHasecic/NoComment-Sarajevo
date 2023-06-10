@@ -80,7 +80,7 @@ fun AdvancedJuniorsScreen(navController: NavController) {
             modifier = Modifier
                 .padding(16.dp)
                 .align(Alignment.BottomEnd),
-            backgroundColor = Color(0xFF0EA570)
+            backgroundColor = Color(0xFF7FEEC7)
 
         ) {
             Icon(Icons.Default.Add, contentDescription = "Add")
