@@ -6,6 +6,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
@@ -14,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import climbing.ba.nocomment.database.deleteMember
 import climbing.ba.nocomment.database.updateMember
 import climbing.ba.nocomment.model.Member
 
@@ -21,6 +24,7 @@ import climbing.ba.nocomment.model.Member
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CardItem(member: Member) {
+    val context = androidx.compose.ui.platform.LocalContext.current
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -29,21 +33,40 @@ fun CardItem(member: Member) {
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxSize()) {
-                Text(
-                    text = member.fullName,
-                    fontSize = MaterialTheme.typography.h5.fontSize,
+                Box(
                     modifier = Modifier
-                        .weight(1f)
                         .fillMaxWidth()
+                        .weight(1f)
                         .background(Color(0xFF0EA570)),
-                    textAlign = TextAlign.Center,
-                    color = Color.White
-                )
+                ) {
+                    Text(
+                        text = member.fullName,
+                        fontSize = MaterialTheme.typography.h5.fontSize,
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                            .padding(start = 16.dp),
+                        textAlign = TextAlign.Center,
+                        color = Color.White
+                    )
+                    IconButton(
+                        onClick = {
+                                  deleteMember(member, context);
+                        },
+                        modifier = Modifier.align(Alignment.CenterEnd)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Delete",
+                            tint = Color.White
+                        )
+                    }
+                }
                 ButtonGrid(member)
             }
         }
     }
 }
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ButtonGrid(member: Member) {

@@ -80,4 +80,17 @@ fun updateMember(member: Member, context: Context) {
         }
 }
 
+fun deleteMember(member: Member, context: Context) {
+    val databaseReference = FirebaseDatabase.getInstance().reference
+    val memberReference = databaseReference.child("members").child(member.id)
+
+    memberReference.removeValue()
+        .addOnSuccessListener {
+            makeToast(context, "Član obrisan")
+        }
+        .addOnFailureListener { exception ->
+            makeToast(context, "Error: ${exception.message}")
+        }
+}
+
 
