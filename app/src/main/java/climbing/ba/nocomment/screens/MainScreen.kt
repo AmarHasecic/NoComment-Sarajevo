@@ -1,6 +1,5 @@
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
@@ -9,36 +8,50 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import climbing.ba.nocomment.R
 import climbing.ba.nocomment.navigation.Screen
 
+
 @Composable
 fun MainScreen(navController: NavController) {
-    LazyColumn(
+    Box(
         modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        contentAlignment = Alignment.Center
     ) {
-        item {
-            Image(
-                painter = painterResource(id = R.drawable.no_comment_logo),
-                contentDescription = "Header Photo",
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 16.dp)
-            )
-        }
-        item {
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.hvatovi),
+                    contentDescription = "Header Photo",
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.no_comment_logo),
+                    contentDescription = "Header Photo",
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
             Button(
                 onClick = {
                     navController.navigate(Screen.AdvancedJuniorsScreen.route)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp)
-                    .padding(horizontal = 16.dp),
+                    .height(50.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFF0EA570),
                     contentColor = Color.White
@@ -49,18 +62,16 @@ fun MainScreen(navController: NavController) {
                     color = Color.White
                 )
             }
+
             Spacer(modifier = Modifier.height(10.dp))
 
-        }
-        item {
             Button(
                 onClick = {
 
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp)
-                    .padding(horizontal = 16.dp),
+                    .height(50.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFF0EA570),
                     contentColor = Color.White
@@ -71,19 +82,16 @@ fun MainScreen(navController: NavController) {
                     color = Color.White
                 )
             }
+
             Spacer(modifier = Modifier.height(10.dp))
 
-        }
-
-        item {
             Button(
                 onClick = {
 
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp)
-                    .padding(horizontal = 16.dp),
+                    .height(50.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFF0EA570),
                     contentColor = Color.White
@@ -94,8 +102,16 @@ fun MainScreen(navController: NavController) {
                     color = Color.White
                 )
             }
-            Spacer(modifier = Modifier.height(10.dp))
 
+            Spacer(modifier = Modifier.height(10.dp))
         }
+        Text(
+            text = "by Amar Hasečić",
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(start = 10.dp),
+            textAlign = TextAlign.Center,
+            color = Color.LightGray
+        )
     }
 }

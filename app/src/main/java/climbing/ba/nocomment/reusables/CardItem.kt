@@ -6,9 +6,10 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -55,6 +56,17 @@ fun CardItem(member: Member) {
                         textAlign = TextAlign.Center,
                         color = Color.White
                     )
+                    if(!showPayments.value) {
+                        Text(
+                            text = "Click for details",
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .padding(start = 10.dp),
+                            textAlign = TextAlign.Center,
+                            color = Color.White
+                        )
+                    }
+                    if(showPayments.value){
                     IconButton(
                         onClick = {
                             showDialog.value = true
@@ -62,10 +74,11 @@ fun CardItem(member: Member) {
                         modifier = Modifier.align(Alignment.CenterEnd)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Close,
+                            imageVector = Icons.Default.Delete,
                             contentDescription = "Delete",
                             tint = Color.White
                         )
+                    }
                     }
                 }
 
@@ -109,11 +122,8 @@ fun ButtonGrid(member: Member) {
         buttonColors[monthIndex] = if (payment.amount > 0) Color.Green else Color(0xFFEB4242)
     }
 
-    val expandedState = remember { mutableStateOf(false) }
-
-
-
-            Column(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.fillMaxWidth()
+                .background(Color(0x37567E59))) {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     buttonColors.subList(0, 6).forEachIndexed { index, color ->
                         Box(
@@ -121,7 +131,7 @@ fun ButtonGrid(member: Member) {
                                 .weight(1f)
                                 .aspectRatio(1f)
                                 .padding(4.dp)
-                                .background(color)
+                                .background(color, shape = RoundedCornerShape(4.dp))
                                 .clickable {
                                     buttonColors[index] =
                                         if (color == Color(0xFFEB4242)) Color.Green else Color(
@@ -151,7 +161,7 @@ fun ButtonGrid(member: Member) {
                                 .weight(1f)
                                 .aspectRatio(1f)
                                 .padding(4.dp)
-                                .background(color)
+                                .background(color, shape = RoundedCornerShape(4.dp))
                                 .clickable {
                                     // Update payment amount based on button click
                                     val monthIndex = index + 6
