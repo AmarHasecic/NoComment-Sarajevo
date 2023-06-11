@@ -19,6 +19,7 @@ import androidx.navigation.NavController
 import climbing.ba.nocomment.database.addMemberToDatabase
 import climbing.ba.nocomment.model.Member
 import climbing.ba.nocomment.model.Payment
+import climbing.ba.nocomment.navigation.Screen
 import java.time.Month
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -71,6 +72,7 @@ fun AddMemberScreen(navController: NavController) {
                     var member: Member = Member("",name,payments)
 
                     addMemberToDatabase(member, context)
+                    navController.navigate(Screen.AdvancedJuniorsScreen.route)
                 }
             },
             modifier = Modifier

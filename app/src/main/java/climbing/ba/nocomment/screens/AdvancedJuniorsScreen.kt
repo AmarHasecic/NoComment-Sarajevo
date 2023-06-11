@@ -1,3 +1,5 @@
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -16,6 +18,7 @@ import climbing.ba.nocomment.reusables.SearchBar
 import climbing.ba.nocomment.reusables.ShowLazyList
 import climbing.ba.nocomment.sealed.DataState
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AdvancedJuniorsScreen(navController: NavController) {
     val dataState = remember { mutableStateOf<DataState>(DataState.Loading) }

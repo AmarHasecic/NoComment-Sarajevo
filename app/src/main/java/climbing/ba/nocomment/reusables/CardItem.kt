@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +26,8 @@ import climbing.ba.nocomment.model.Member
 @Composable
 fun CardItem(member: Member) {
     val context = androidx.compose.ui.platform.LocalContext.current
+    val showDialog = remember { mutableStateOf(false) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -50,7 +53,8 @@ fun CardItem(member: Member) {
                     )
                     IconButton(
                         onClick = {
-                                  deleteMember(member, context);
+                            showDialog.value = true
+
                         },
                         modifier = Modifier.align(Alignment.CenterEnd)
                     ) {
@@ -65,26 +69,33 @@ fun CardItem(member: Member) {
             }
         }
     }
+    if (showDialog.value) {
+        showDialog(showDialog = showDialog, "Delete", "Do you want to delete member?", "Yes", "No",
+            { deleteMember(member,context) }, {})
+    }
+
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ButtonGrid(member: Member) {
-
+    val showDialog = remember { mutableStateOf(false) }
     val context = androidx.compose.ui.platform.LocalContext.current
     val buttonColors = remember {
         mutableStateListOf(
-            Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242),
-            Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242)
+            Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242),
+            Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242),
+            Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242)
         )
     }
 
     // Update buttonColors based on member's payments
     member.payments.forEach { payment ->
-        val monthIndex = payment.month.value-1
-            buttonColors[monthIndex] = if (payment.amount > 0) Color.Green else Color(0xFFEB4242)
-
+        val monthIndex = payment.month.value - 1
+        buttonColors[monthIndex] = if (payment.amount > 0) Color.Green else Color(0xFFEB4242)
     }
+
+    val expandedState = remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -96,12 +107,12 @@ fun ButtonGrid(member: Member) {
                         .padding(4.dp)
                         .background(color)
                         .clickable {
-                            buttonColors[index] = if (color == Color(0xFFEB4242)) Color.Green else Color(0xFFEB4242)
+                            buttonColors[index] =
+                                if (color == Color(0xFFEB4242)) Color.Green else Color(0xFFEB4242)
                             // Update payment amount based on button click
-                            member.payments[index].amount = if (color == Color(0xFFEB4242)) 50 else 0
-
+                            member.payments[index].amount =
+                                if (color == Color(0xFFEB4242)) 50 else 0
                             updateMember(member, context)
-
                         }
                 ) {
                     Text(
@@ -123,13 +134,13 @@ fun ButtonGrid(member: Member) {
                         .padding(4.dp)
                         .background(color)
                         .clickable {
-                            buttonColors[index + 6] = if (color == Color(0xFFEB4242)) Color.Green else Color(0xFFEB4242)
                             // Update payment amount based on button click
                             val monthIndex = index + 6
-                            member.payments[monthIndex].amount = if (color == Color(0xFFEB4242)) 50 else 0
-
+                            member.payments[monthIndex].amount =
+                                if (color == Color(0xFFEB4242)) 50 else 0
+                            buttonColors[index + 6] =
+                                if (color == Color(0xFFEB4242)) Color.Green else Color(0xFFEB4242)
                             updateMember(member, context)
-
                         }
                 ) {
                     Text(
@@ -142,6 +153,18 @@ fun ButtonGrid(member: Member) {
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
+    }
+
+    if (showDialog.value) {
+        showDialog(
+            showDialog = showDialog,
+            "Update",
+            "Do you want to update the payment?",
+            "Yes",
+            "No",
+            { updateMember(member, context) },
+            {}
+        )
     }
 }
 
