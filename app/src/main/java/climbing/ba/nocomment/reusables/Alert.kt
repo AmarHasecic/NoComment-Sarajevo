@@ -5,6 +5,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import climbing.ba.nocomment.model.Member
 
@@ -23,8 +24,11 @@ fun showDialog(
     if (showDialog.value) {
         AlertDialog(
             onDismissRequest = { onDismiss() },
-            title = { Text(text = dialogTitle) },
-            text = { Text(text = dialogMessage) },
+            title = { Text(text = dialogTitle,
+                color = Color.Black
+            ) },
+            text = { Text(text = dialogMessage,
+                color = Color.Black) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -44,7 +48,8 @@ fun showDialog(
                 ) {
                     Text(text = cancelButtonText)
                 }
-            }
+            },
+            backgroundColor = Color.LightGray
         )
     }
 }

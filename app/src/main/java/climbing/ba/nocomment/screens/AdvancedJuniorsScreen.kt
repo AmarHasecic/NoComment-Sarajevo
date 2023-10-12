@@ -30,15 +30,15 @@ fun AdvancedJuniorsScreen(navController: NavController) {
 
     when (val state = dataState.value) {
         is DataState.Success -> {
-            val memberList = state.data
+            val memberList = state.data.toMutableList()
             Column {
                 SearchBar(searchQuery.value) { newQuery ->
                     searchQuery.value = newQuery
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 ShowLazyList(memberList.filter { member ->
-                    member.fullName?.contains(searchQuery.value, ignoreCase = true) == true
-                })
+                    member.fullName.contains(searchQuery.value, ignoreCase = true)
+                }.toMutableList())
             }
         }
         is DataState.Failure -> {

@@ -58,7 +58,7 @@ fun MainScreen(navController: NavController) {
                 )
             ) {
                 Text(
-                    text = "Pioniri",
+                    text = "Juniori",
                     color = Color.White
                 )
             }
@@ -78,7 +78,27 @@ fun MainScreen(navController: NavController) {
                 )
             ) {
                 Text(
-                    text = "Juniori",
+                    text = "Napredni Juniori",
+                    color = Color.White
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Button(
+                onClick = {
+
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xFF0EA570),
+                    contentColor = Color.White
+                )
+            ) {
+                Text(
+                    text = "Starija grupa",
                     color = Color.White
                 )
             }

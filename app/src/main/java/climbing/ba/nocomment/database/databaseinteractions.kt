@@ -87,6 +87,7 @@ fun deleteMember(member: Member, context: Context) {
     memberReference.removeValue()
         .addOnSuccessListener {
             makeToast(context, "Član obrisan")
+
         }
         .addOnFailureListener { exception ->
             makeToast(context, "Error: ${exception.message}")

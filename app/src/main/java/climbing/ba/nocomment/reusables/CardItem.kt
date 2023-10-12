@@ -25,7 +25,7 @@ import climbing.ba.nocomment.model.Member
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CardItem(member: Member) {
+fun CardItem(member: Member, members: MutableList<Member>) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val showDialog = remember { mutableStateOf(false) }
     val showPayments = remember { mutableStateOf(false) } // Track if payments should be shown
@@ -96,7 +96,10 @@ fun CardItem(member: Member) {
             "Do you want to delete member?",
             "Yes",
             "No",
-            { deleteMember(member, context) },
+            {
+                deleteMember(member, context)
+                members.remove(member)
+            },
             {}
         )
     }

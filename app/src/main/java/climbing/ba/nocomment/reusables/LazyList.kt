@@ -9,10 +9,10 @@ import climbing.ba.nocomment.model.Member
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ShowLazyList(members: List<Member>) {
+fun ShowLazyList(members: MutableList<Member>) {
     LazyColumn {
         items(members) { member ->
-            CardItem(member)
+            CardItem(member, members)
         }
     }
 }
