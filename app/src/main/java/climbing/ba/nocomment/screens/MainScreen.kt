@@ -18,112 +18,106 @@ import climbing.ba.nocomment.navigation.Screen
 @Composable
 fun MainScreen(navController: NavController) {
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize()
     ) {
         Column(
             modifier = Modifier.padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 16.dp)
+                    .padding(vertical = 0.dp)
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.hvatovi),
-                    contentDescription = "Header Photo",
-                    modifier = Modifier.fillMaxWidth()
-                )
                 Image(
                     painter = painterResource(id = R.drawable.no_comment_logo),
                     contentDescription = "Header Photo",
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().
+                    padding(top = 100.dp, bottom = 35.dp)
                 )
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
-            Button(
-                onClick = {
-                    navController.navigate(Screen.AdvancedJuniorsScreen.route)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFF0EA570),
-                    contentColor = Color.White
-                )
-            ) {
-                Text(
-                    text = "Juniori",
-                    color = Color.White
-                )
-            }
+                    Button(
+                        onClick = {
+                            navController.navigate(Screen.AdvancedJuniorsScreen.route)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color(0xFF0EA570),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            text = "Juniori",
+                            color = Color.White
+                        )
+                    }
 
-            Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
-            Button(
-                onClick = {
+                    Button(
+                        onClick = {
 
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFF0EA570),
-                    contentColor = Color.White
-                )
-            ) {
-                Text(
-                    text = "Napredni Juniori",
-                    color = Color.White
-                )
-            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color(0xFF0EA570),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            text = "Napredni Juniori",
+                            color = Color.White
+                        )
+                    }
 
-            Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
-            Button(
-                onClick = {
+                    Button(
+                        onClick = {
 
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFF0EA570),
-                    contentColor = Color.White
-                )
-            ) {
-                Text(
-                    text = "Starija grupa",
-                    color = Color.White
-                )
-            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color(0xFF0EA570),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            text = "Starija grupa",
+                            color = Color.White
+                        )
+                    }
 
-            Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
-            Button(
-                onClick = {
+                    Button(
+                        onClick = {
 
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFF0EA570),
-                    contentColor = Color.White
-                )
-            ) {
-                Text(
-                    text = "Rekreativci",
-                    color = Color.White
-                )
-            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color(0xFF0EA570),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            text = "Rekreativci",
+                            color = Color.White
+                        )
+                    }
 
-            Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
         }
         Text(
             text = "by Amar Hasečić",
