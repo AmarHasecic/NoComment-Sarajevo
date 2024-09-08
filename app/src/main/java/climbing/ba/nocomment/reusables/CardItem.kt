@@ -10,9 +10,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -38,7 +40,9 @@ fun CardItem(
         modifier = Modifier
             .fillMaxWidth()
             .height(220.dp)
-            .padding(10.dp)
+            .padding(10.dp) ,
+        elevation = 3.dp,
+        shape = RoundedCornerShape(10.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxSize()) {
@@ -53,39 +57,89 @@ fun CardItem(
                 ) {
                     Text(
                         text = member.fullName,
-                        fontSize = 20.sp,
+                        fontSize = 22.sp,
                         modifier = Modifier
-                            .align(Alignment.CenterStart)
-                            .padding(start = 16.dp),
+                            .padding(start = 16.dp, top = 10.dp),
                         textAlign = TextAlign.Center,
-                        color = Color.White
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
                     )
                     if (!showPayments.value) {
+
+                        Column(
+                            modifier = Modifier.padding(start = 16.dp, top = 50.dp)
+                        ){
+                            Row(){
+                                Text("Ime roditelja: ",
+                                    color = Color.White)
+                                Text(text = member.imeRoditelja,
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold)
+                            }
+                            Row() {
+
+                                Text(
+                                    "Kontakt telefon: ",
+                                    color = Color.White
+                                )
+                                Text(
+                                    text = member.brojTelefonaRoditelja,
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
                         Text(
-                            text = "Tap for details",
+                            text = "Dodirni da vidiš plaćanja",
                             modifier = Modifier
                                 .align(Alignment.BottomCenter)
-                                .padding(start = 10.dp),
+                                .padding(start = 10.dp, bottom = 4.dp),
                             textAlign = TextAlign.Center,
-                            color = Color.White
+                            color = Color.LightGray
                         )
                     }
                     if (showPayments.value) {
-                        IconButton(
-                            onClick = {
-                                showDialog.value = true
-                            },
+
+                        Row(
                             modifier = Modifier
                                 .align(Alignment.CenterEnd)
-                                .size(48.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "Delete",
-                                tint = Color.White,
-                                modifier = Modifier.size(30.dp)
-                            )
+                                .padding(end = 5.dp)
+
+                        ){
+                            IconButton(
+                                onClick = {
+                                    //TODO: Napraviti screen za edit clana
+                                },
+                                modifier = Modifier
+                                    .size(32.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = "Edit",
+                                    tint = Color.White,
+                                    modifier = Modifier.size(30.dp)
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.padding(horizontal = 3.dp))
+
+                            IconButton(
+                                onClick = {
+                                    showDialog.value = true
+                                },
+                                modifier = Modifier
+                                    .size(32.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "Delete",
+                                    tint = Color.White,
+                                    modifier = Modifier.size(30.dp)
+                                )
+                            }
+
                         }
+
                     }
                 }
 
@@ -118,6 +172,7 @@ fun CardItem(
             }
         )
     }
+
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
