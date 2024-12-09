@@ -5,11 +5,9 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
 import climbing.ba.nocomment.model.Member
+import climbing.ba.nocomment.model.User
 import climbing.ba.nocomment.sealed.DataState
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.tasks.await
 
 
@@ -93,5 +91,73 @@ fun deleteMember(member: Member, context: Context) {
             makeToast(context, "Error: ${exception.message}")
         }
 }
+
+suspend fun fetchMemberById(memberId: String): DataState {
+    val databaseReference = FirebaseDatabase.getInstance().reference
+    val memberReference = databaseReference.child("members").child(memberId)
+
+    return try {
+        val dataSnapshot = memberReference.get().await()
+
+        if (dataSnapshot.exists()) {
+            val member = dataSnapshot.getValue(Member::class.java)
+            if (member != null) {
+                DataState.SuccessMember(member)
+            } else {
+                DataState.Empty
+            }
+        } else {
+            DataState.Empty
+        }
+    } catch (e: Exception) {
+        DataState.Failure(e.message ?: "An error occurred")
+    }
+}
+
+suspend fun fetchUsers(): DataState {
+    val databaseReference = FirebaseDatabase.getInstance().reference
+    val usersReference = databaseReference.child("users")
+
+    val userList = mutableListOf<User>()
+
+    return try {
+        val dataSnapshot = usersReference.get().await()
+        if (dataSnapshot.exists()) {
+            for (childSnapshot in dataSnapshot.children) {
+                val user = childSnapshot.getValue(User::class.java)
+                user?.let {
+                    userList.add(it)
+                }
+            }
+            DataState.SuccessUsers(userList)
+        } else {
+            DataState.Empty
+        }
+    } catch (e: Exception) {
+        DataState.Failure(e.message ?: "An error occurred")
+    }
+}
+
+fun updateUserPassword(id: String, newPassword: String, context: Context) {
+    val databaseReference = FirebaseDatabase.getInstance().reference
+    val userReference = databaseReference.child("users").child(id)
+
+    val updates = mapOf<String, Any>(
+        "password" to newPassword
+    )
+
+    userReference.updateChildren(updates)
+        .addOnSuccessListener {
+            makeToast(context, "Password successfully updated")
+        }
+        .addOnFailureListener { exception ->
+            makeToast(context, "Error: ${exception.message}")
+        }
+}
+
+
+
+
+
 
 

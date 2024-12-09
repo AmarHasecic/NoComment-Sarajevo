@@ -79,6 +79,9 @@ fun JuniorScreen(navController: NavController) {
                 )
             }
         }
+
+        is DataState.SuccessMember -> TODO()
+        is DataState.SuccessUsers -> TODO()
     }
 
     Box(modifier = Modifier.fillMaxSize()) {

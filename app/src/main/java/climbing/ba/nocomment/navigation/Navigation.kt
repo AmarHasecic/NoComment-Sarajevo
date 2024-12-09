@@ -6,12 +6,16 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import climbing.ba.nocomment.screens.AddMemberScreen
 import climbing.ba.nocomment.screens.AdvancedJuniorsScreen
+import climbing.ba.nocomment.screens.EditMemberScreen
 import climbing.ba.nocomment.screens.JuniorScreen
+import climbing.ba.nocomment.screens.LoginScreen
 import climbing.ba.nocomment.screens.PubertetlijeScreen
 import climbing.ba.nocomment.screens.RekreativciScreen
 import climbing.ba.nocomment.screens.StarijaGrupaScreen
@@ -23,13 +27,19 @@ fun Navigation(
     lifecycleOwner: LifecycleOwner
 ) {
     val navController = rememberNavController();
-    NavHost(navController = navController, startDestination = Screen.MainScreen.route) {
+    NavHost(navController = navController, startDestination = Screen.LoginScreen.route) {
 
-           composable(
-                route = Screen.MainScreen.route
-            ) {
-               MainScreen(navController = navController)
-            }
+        composable(
+            route = Screen.LoginScreen.route
+        ) {
+            LoginScreen(navController = navController)
+        }
+
+        composable(
+            route = Screen.MainScreen.route
+        ) {
+            MainScreen(navController = navController)
+        }
 
         composable(
             route = Screen.JuniorScreen.route
@@ -65,6 +75,19 @@ fun Navigation(
             route = Screen.AddMemberScreen.route
         ) {
             AddMemberScreen(navController =navController)
+        }
+
+        composable(
+            route = Screen.EditMemberScreen.route + "/{memberId}",
+            arguments = listOf(
+                navArgument("memberId"){
+                    type = NavType.StringType
+                    nullable = true
+                }
+            )
+        )
+        { entry ->
+            entry.arguments?.getString("memberId")?.let { EditMemberScreen(navController,memberId = it) }
         }
 
     }

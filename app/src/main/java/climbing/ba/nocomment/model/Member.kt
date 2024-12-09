@@ -7,7 +7,7 @@ data class Member(
     var imeRoditelja: String = "",
     var brojTelefonaRoditelja: String = "",
     var payments: List<Payment> = emptyList(),
-    val type: MemberType? = null  // Make 'type' nullable
+    val type: MemberType? = null
 ) {
     constructor() : this("", "", "", "",emptyList(), null)
 }

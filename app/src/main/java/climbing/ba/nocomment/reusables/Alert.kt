@@ -10,7 +10,7 @@ import androidx.compose.ui.platform.LocalContext
 import climbing.ba.nocomment.model.Member
 
 @Composable
-fun showDialog(
+fun ShowDialog(
     showDialog: MutableState<Boolean>,
     dialogTitle: String,
     dialogMessage: String,
@@ -49,7 +49,7 @@ fun showDialog(
                     Text(text = cancelButtonText)
                 }
             },
-            backgroundColor = Color.LightGray
+            backgroundColor = Color.White
         )
     }
 }

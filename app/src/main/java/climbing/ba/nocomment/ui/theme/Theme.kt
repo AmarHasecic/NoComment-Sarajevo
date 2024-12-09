@@ -9,12 +9,14 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
+//TODO: enable dark theme
+
 private val DarkColorPalette = darkColors(
-    primary = Color(0xFF3C3131),
-    primaryVariant = Color(0xFF868282),
-    secondary = Color(0xFF000000),
+    primary = Color(0xFFFFFFFF),
+    primaryVariant = Color(0xFFFFFFFF),
+    secondary = Color(0xFFFFFFFF),
     background = Color.White,
-    surface = Color.DarkGray,
+    surface = Color.Black,
     onPrimary = Color.Black,
     onSecondary = Color.Black,
     onBackground = Color.White,
@@ -22,14 +24,14 @@ private val DarkColorPalette = darkColors(
 )
 
 private val LightColorPalette = lightColors(
-    primary = Color(0xFF2E1F1F),
-    primaryVariant = Color(0xFF868282),
+    primary = Color(0xFFA8A8A8),
+    primaryVariant = Color(0xFF333333),
     secondary = Color(0xFF000000),
     background = Color.White,
     surface = Color.DarkGray,
     onPrimary = Color.Black,
     onSecondary = Color.Black,
-    onBackground = Color.White,
+    onBackground = Color.Black,
     onSurface = Color.Black
 )
 
@@ -37,7 +39,7 @@ private val LightColorPalette = lightColors(
 @Composable
 fun NoCommentTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colors = if (darkTheme) {
-        DarkColorPalette
+        LightColorPalette
     } else {
         LightColorPalette
     }

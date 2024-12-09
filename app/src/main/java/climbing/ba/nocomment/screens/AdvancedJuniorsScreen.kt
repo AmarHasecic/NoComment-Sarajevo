@@ -1,5 +1,6 @@
 package climbing.ba.nocomment.screens
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
@@ -18,6 +19,7 @@ import climbing.ba.nocomment.reusables.SearchBar
 import climbing.ba.nocomment.reusables.ShowLazyList
 import climbing.ba.nocomment.sealed.DataState
 
+@SuppressLint("MutableCollectionMutableState")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AdvancedJuniorsScreen(navController: NavController) {
@@ -34,7 +36,6 @@ fun AdvancedJuniorsScreen(navController: NavController) {
             var memberList by remember { mutableStateOf(state.data.filter { it.type == MemberType.NAPREDNI_JUNIOR }.toMutableList()) }
 
             Column {
-
                 SearchBar(searchQuery.value) { newQuery ->
                     searchQuery.value = newQuery
                 }
@@ -79,6 +80,9 @@ fun AdvancedJuniorsScreen(navController: NavController) {
                 )
             }
         }
+
+        is DataState.SuccessMember -> TODO()
+        is DataState.SuccessUsers -> TODO()
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
