@@ -9,18 +9,37 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Button
+import androidx.compose.material.Card
+import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
@@ -31,14 +50,17 @@ import androidx.navigation.NavController
 import climbing.ba.nocomment.R
 import climbing.ba.nocomment.database.deleteMember
 import climbing.ba.nocomment.model.Member
+import climbing.ba.nocomment.model.Payment
 import climbing.ba.nocomment.navigation.Screen
+import com.google.firebase.database.FirebaseDatabase
+import java.time.Month
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CardItem(
     member: Member,
-    members: MutableList<Member>,
-    navController: NavController
+    navController: NavController,
+    year: Int
 ) {
     val context = LocalContext.current
     val showDialog = remember { mutableStateOf(false) }
@@ -46,6 +68,8 @@ fun CardItem(
     val rotation = animateFloatAsState(
         targetValue = if (flipped.value) 180f else 0f
     ).value
+
+    val paymentsState = remember { member.payments.toMutableStateList() }
 
     Card(
         modifier = Modifier
@@ -64,11 +88,14 @@ fun CardItem(
             FrontSide(member = member, context = context)
         } else {
             Box(
-                modifier = Modifier.graphicsLayer {
-                    rotationY = 180f
-                }
+                modifier = Modifier.graphicsLayer { rotationY = 180f }
             ) {
-                BackSide(member = member, navController = navController, showDialog = showDialog)
+                BackSide(
+                    member = member,
+                    paymentsState = paymentsState,
+                    showDialog = showDialog,
+                    year = year
+                )
             }
         }
     }
@@ -76,8 +103,8 @@ fun CardItem(
     if (showDialog.value) {
         AlertDialog(
             onDismissRequest = { showDialog.value = false },
-            title = { Text("Delete", color = Color.White) },
-            text = { Text("Do you want to delete this member?", color = Color.White) },
+            title = { Text("Delete") },
+            text = { Text("Do you want to delete this member?") },
             confirmButton = {
                 Button(onClick = {
                     deleteMember(member, context)
@@ -92,6 +119,7 @@ fun CardItem(
     }
 }
 
+
 @Composable
 fun FrontSide(member: Member, context: android.content.Context) {
     Box(
@@ -104,7 +132,7 @@ fun FrontSide(member: Member, context: android.content.Context) {
             Box(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
-            ){
+            ) {
                 Text(
                     text = "Članska kartica",
                     fontSize = 30.sp,
@@ -112,30 +140,22 @@ fun FrontSide(member: Member, context: android.content.Context) {
                     color = Color.Black
                 )
             }
-                Column(modifier = Modifier.padding(start = 16.dp, top = 35.dp)) {
-
-                    Row {
-                        Text("Ime i prezime: ", color = Color.Black, fontSize = 18.sp)
-                        Column(
-                            modifier = Modifier.fillMaxWidth()
-                                .padding(end = 40.dp)
-                        ) {
-                            Text(member.fullName, color = Color.Black)
-                            Divider(
-                                color = Color.Black,
-                                thickness = 1.dp
-                            )
-                        }
+            Column(modifier = Modifier.padding(start = 16.dp, top = 35.dp)) {
+                Row {
+                    Text("Ime i prezime: ", color = Color.Black, fontSize = 18.sp)
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 40.dp)
+                    ) {
+                        Text(member.fullName, color = Color.Black)
+                        Divider(color = Color.Black, thickness = 1.dp)
                     }
-                    if (member.imeRoditelja.isNotEmpty() && member.brojTelefonaRoditelja.isNotEmpty()) {
-
-                    Row (
-
-                    ){
+                }
+                if (member.imeRoditelja.isNotEmpty() && member.brojTelefonaRoditelja.isNotEmpty()) {
+                    Row {
                         Column {
-                            Row(
-                                modifier = Modifier.padding(top = 40.dp)
-                            ) {
+                            Row(modifier = Modifier.padding(top = 40.dp)) {
                                 Text("Ime roditelja: ", color = Color.Black, fontSize = 18.sp)
                                 Text(member.imeRoditelja, color = Color.Black)
                             }
@@ -165,25 +185,23 @@ fun FrontSide(member: Member, context: android.content.Context) {
                                 )
                             }
                         }
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(top = 40.dp, end = 20.dp),
-                            contentAlignment = Alignment.BottomEnd
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.no_comment_logo),
-                                contentDescription = "Header Photo",
-                                modifier = Modifier
-                                    .size(120.dp)
-                                    .graphicsLayer(alpha = 0.7f)
-                            )
-                        }
-
                     }
                 }
             }
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 40.dp, end = 20.dp),
+            contentAlignment = Alignment.BottomEnd
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.no_comment_logo),
+                contentDescription = "Header Photo",
+                modifier = Modifier
+                    .size(120.dp)
+                    .graphicsLayer(alpha = 0.7f)
+            )
         }
     }
 }
@@ -192,11 +210,14 @@ fun FrontSide(member: Member, context: android.content.Context) {
 @Composable
 fun BackSide(
     member: Member,
-    navController: NavController,
-    showDialog: MutableState<Boolean>
+    paymentsState: SnapshotStateList<Payment>,
+    showDialog: MutableState<Boolean>,
+    year: Int
 ) {
-    Column(modifier = Modifier.fillMaxSize()
-        .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
     ) {
         Row(
             modifier = Modifier
@@ -222,18 +243,14 @@ fun BackSide(
                 )
             }
         }
-        ButtonGrid(member)
+
+        ButtonGrid(member = member, paymentsState = paymentsState, year = year)
     }
 }
 
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ButtonGrid(member: Member) {
-    val buttonPaidState = remember {
-        mutableStateListOf(*member.payments.map { it.amount > 0 }.toTypedArray())
-    }
-
+fun ButtonGrid(member: Member, paymentsState: SnapshotStateList<Payment>, year: Int) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -241,108 +258,75 @@ fun ButtonGrid(member: Member) {
             .background(Color.White)
             .padding(10.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        ) {
-            member.payments.subList(0, 6).forEachIndexed { index, payment ->
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(2.dp)
-                        .fillMaxHeight()
-                        .border(1.dp, Color.Black, RoundedCornerShape(6.dp))
-                        .background(Color.White, RoundedCornerShape(6.dp))
-                        .clickable {
-                            buttonPaidState[index] = !buttonPaidState[index]
-                            payment.amount = if (buttonPaidState[index]) 50 else 0
-                        },
-                    contentAlignment = Alignment.BottomCenter
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxSize()
-                            .padding(top = 5.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        if (buttonPaidState[index]) {
-                            Icon(
-                                imageVector = Icons.Default.Check,
-                                contentDescription = "Paid",
-                                tint = Color.Green,
-                                modifier = Modifier.size(30.dp)
-                            )
-                        } else {
-                            Spacer(modifier = Modifier.height(24.dp))
-                        }
+        monthNames.chunked(6).forEachIndexed { rowIndex, months ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                months.forEachIndexed { colIndex, monthName ->
+                    val monthIndex = rowIndex * 6 + colIndex
+                    val month = Month.of(monthIndex + 1)
 
-                        Text(
-                            text = monthNames[index],
-                            color = Color.Black,
-                            fontSize = 14.sp,
-                            modifier = Modifier.padding(bottom = 6.dp)
-                        )
+                    var payment = paymentsState.find { it.month == month && it.year == year }
+                    val isPaid = (payment?.amount ?: 0) > 0
+
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(2.dp)
+                            .fillMaxHeight()
+                            .border(1.dp, Color.Black, RoundedCornerShape(6.dp))
+                            .background(Color.White, RoundedCornerShape(6.dp))
+                            .clickable {
+                                val databaseReference = FirebaseDatabase.getInstance().reference
+                                val memberRef = databaseReference.child("members").child(member.id)
+
+                                if (payment == null) {
+                                    val newPayment = Payment(amount = 60, month = month, year = year)
+                                    paymentsState.add(newPayment)
+                                } else {
+                                    paymentsState.remove(payment)
+                                    payment = null
+                                }
+                                memberRef.child("payments").setValue(paymentsState)
+                            },
+                        contentAlignment = Alignment.BottomCenter
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(top = 5.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            if (isPaid) {
+                                Icon(
+                                    imageVector = Icons.Default.Check,
+                                    contentDescription = "Paid",
+                                    tint = Color.Green,
+                                    modifier = Modifier.size(30.dp)
+                                )
+                            } else {
+                                Spacer(modifier = Modifier.height(30.dp))
+                            }
+
+                            Text(
+                                text = monthName,
+                                color = Color.Black,
+                                fontSize = 14.sp,
+                                modifier = Modifier.padding(bottom = 6.dp)
+                            )
+                        }
                     }
                 }
             }
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        ) {
-            member.payments.subList(6, 12).forEachIndexed { index, payment ->
-                val monthIndex = index + 6
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(2.dp)
-                        .fillMaxHeight()
-                        .border(1.dp, Color.Black, RoundedCornerShape(6.dp))
-                        .background(Color.White, RoundedCornerShape(6.dp))
-                        .clickable {
-                            buttonPaidState[monthIndex] = !buttonPaidState[monthIndex]
-                            payment.amount = if (buttonPaidState[monthIndex]) 50 else 0
-                        },
-                    contentAlignment = Alignment.BottomCenter
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxSize()
-                            .padding(top = 5.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        if (buttonPaidState[monthIndex]) {
-                            Icon(
-                                imageVector = Icons.Default.Check,
-                                contentDescription = "Paid",
-                                tint = Color.Green,
-                                modifier = Modifier.size(30.dp)
-                            )
-                        } else {
-                            Spacer(modifier = Modifier.height(24.dp))
-                        }
-
-                        Text(
-                            text = monthNames[monthIndex],
-                            color = Color.Black,
-                            fontSize = 14.sp,
-                            modifier = Modifier.padding(bottom = 6.dp)
-                        )
-                    }
-                }
-            }
+            Spacer(modifier = Modifier.height(4.dp))
         }
     }
 }
-
 
 val monthNames = listOf(
     "Jan", "Feb", "Mar", "Apr", "Maj", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 )
-

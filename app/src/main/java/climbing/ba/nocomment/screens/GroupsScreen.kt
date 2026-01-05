@@ -1,14 +1,18 @@
 package climbing.ba.nocomment.screens
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -23,18 +27,22 @@ import androidx.navigation.NavController
 import climbing.ba.nocomment.navigation.Screen
 import climbing.ba.nocomment.reusables.BottomNavigationBar
 
+data class GroupItem(val name: String, val route: String)
+
 @Composable
 fun GroupsScreen(navController: NavController) {
+    val groups = listOf(
+        GroupItem("Juniori", Screen.JuniorScreen.route),
+        GroupItem("Napredni Juniori", Screen.AdvancedJuniorsScreen.route),
+        GroupItem("Starija grupa", Screen.StarijaGrupaScreen.route),
+        GroupItem("Rekreativci", Screen.RekreativciScreen.route),
+        GroupItem("Pubertetlije", Screen.PubertetlijeScreen.route)
+    )
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Grupe") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                },
                 backgroundColor = Color.White
             )
         },
@@ -42,76 +50,31 @@ fun GroupsScreen(navController: NavController) {
             BottomNavigationBar(navController)
         }
     ) { innerPadding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(horizontal = 20.dp, vertical = 20.dp),
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(
-                onClick = { navController.navigate(Screen.JuniorScreen.route) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFF0EA570),
-                    contentColor = Color.White
-                )
-            ) { Text("Juniori") }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Button(
-                onClick = { navController.navigate(Screen.AdvancedJuniorsScreen.route) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFF0EA570),
-                    contentColor = Color.White
-                )
-            ) { Text("Napredni Juniori") }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Button(
-                onClick = { navController.navigate(Screen.StarijaGrupaScreen.route) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFF0EA570),
-                    contentColor = Color.White
-                )
-            ) { Text("Starija grupa") }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Button(
-                onClick = { navController.navigate(Screen.RekreativciScreen.route) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFF0EA570),
-                    contentColor = Color.White
-                )
-            ) { Text("Rekreativci") }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Button(
-                onClick = { navController.navigate(Screen.PubertetlijeScreen.route) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFF0EA570),
-                    contentColor = Color.White
-                )
-            ) { Text("Pubertetlije") }
-
-            Spacer(modifier = Modifier.height(10.dp))
+            items(groups) { group ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .clickable { navController.navigate(group.route) },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = group.name,
+                        color = Color.Black,
+                        style = MaterialTheme.typography.h6
+                    )
+                }
+                Divider(color = Color.LightGray, thickness = 1.dp)
+            }
         }
+
     }
 }

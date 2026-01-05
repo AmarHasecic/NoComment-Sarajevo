@@ -33,8 +33,8 @@ suspend fun fetchData(): DataState {
         if (dataSnapshot.exists()) {
             for (childSnapshot in dataSnapshot.children) {
                 val member = childSnapshot.getValue(Member::class.java)
-                member?.let {
-                    memberList.add(it)
+                member?.let { m ->
+                    memberList.add(m)
                 }
             }
             DataState.Success(memberList)
@@ -45,6 +45,8 @@ suspend fun fetchData(): DataState {
         DataState.Failure(e.message ?: "An error occurred")
     }
 }
+
+
 
 fun addMemberToDatabase(member: Member, context: Context) {
     val databaseReference = FirebaseDatabase.getInstance().reference

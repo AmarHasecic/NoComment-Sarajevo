@@ -15,17 +15,25 @@ import climbing.ba.nocomment.model.Member
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ShowLazyList(members: MutableList<Member>, navController: NavController) {
+fun ShowLazyList(
+    members: MutableList<Member>,
+    navController: NavController,
+    year: Int
+) {
     LazyColumn {
         items(members) { member ->
-            CardItem(member, members, navController)
+            CardItem(
+                member = member,
+                navController = navController,
+                year = year
+            )
         }
-        item{
+        item {
             Box(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .height(150.dp)
-            ){
-
+            ) {
             }
         }
     }

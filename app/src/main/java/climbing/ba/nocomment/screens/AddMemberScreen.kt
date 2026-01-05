@@ -2,13 +2,30 @@ package climbing.ba.nocomment.screens
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ExposedDropdownMenuBox
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,10 +34,8 @@ import androidx.navigation.NavController
 import climbing.ba.nocomment.database.addMemberToDatabase
 import climbing.ba.nocomment.model.Member
 import climbing.ba.nocomment.model.MemberType
-import climbing.ba.nocomment.model.Payment
 import climbing.ba.nocomment.navigation.Screen
 import climbing.ba.nocomment.reusables.BottomNavigationBar
-import java.time.Month
 
 @OptIn(ExperimentalMaterialApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -37,11 +52,6 @@ fun AddMemberScreen(navController: NavController) {
         topBar = {
             TopAppBar(
                 title = { Text("Novi kolačić") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                },
                 backgroundColor = Color.White
             )
         },
@@ -126,26 +136,12 @@ fun AddMemberScreen(navController: NavController) {
                     val parentPhone = brojTelefonaRoditelja.value
 
                     if (name.isNotEmpty()) {
-                        val payments = listOf(
-                            Payment(0, Month.JANUARY),
-                            Payment(0, Month.FEBRUARY),
-                            Payment(0, Month.MARCH),
-                            Payment(0, Month.APRIL),
-                            Payment(0, Month.MAY),
-                            Payment(0, Month.JUNE),
-                            Payment(0, Month.JULY),
-                            Payment(0, Month.AUGUST),
-                            Payment(0, Month.SEPTEMBER),
-                            Payment(0, Month.OCTOBER),
-                            Payment(0, Month.NOVEMBER),
-                            Payment(0, Month.DECEMBER)
-                        )
                         val member = Member(
                             id = "",
                             fullName = name,
                             imeRoditelja = parentName,
                             brojTelefonaRoditelja = parentPhone,
-                            payments = payments,
+                            payments = emptyList(),
                             type = selectedType.value
                         )
 
