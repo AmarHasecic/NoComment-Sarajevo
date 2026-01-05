@@ -11,4 +11,6 @@ sealed class Screen (val route : String){
     object AddMemberScreen : Screen("AddMemberScreen")
     object EditMemberScreen : Screen("EditMemberScreen")
     object LoginScreen : Screen("LoginScreen")
+    object GroupsScreen : Screen("GroupsScreen")
+    object SettingsScreen : Screen("SettingsScreen")
 }

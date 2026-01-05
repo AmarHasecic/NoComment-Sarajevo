@@ -1,46 +1,35 @@
+//noinspection UsingMaterialAndMaterial3Libraries
 package climbing.ba.nocomment.reusables
 
 import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import climbing.ba.nocomment.R
 import climbing.ba.nocomment.database.deleteMember
-import climbing.ba.nocomment.database.updateMember
 import climbing.ba.nocomment.model.Member
 import climbing.ba.nocomment.navigation.Screen
 
@@ -51,159 +40,35 @@ fun CardItem(
     members: MutableList<Member>,
     navController: NavController
 ) {
-    val context = androidx.compose.ui.platform.LocalContext.current
+    val context = LocalContext.current
     val showDialog = remember { mutableStateOf(false) }
-    val showPayments = remember { mutableStateOf(false) }
+    val flipped = remember { mutableStateOf(false) }
+    val rotation = animateFloatAsState(
+        targetValue = if (flipped.value) 180f else 0f
+    ).value
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(220.dp)
-            .padding(10.dp) ,
+            .height(260.dp)
+            .padding(10.dp)
+            .clickable { flipped.value = !flipped.value }
+            .graphicsLayer {
+                rotationY = rotation
+                cameraDistance = 12f * density
+            },
         elevation = 3.dp,
         shape = RoundedCornerShape(11.dp)
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .background(Color(0xFF0EA570))
-                        .clickable {
-                            showPayments.value = !showPayments.value
-                        }
-                ) {
-                    if (!showPayments.value) {
-                        Text(
-                            text = member.fullName,
-                            fontSize = 24.sp,
-                            modifier = Modifier
-                                .padding(start = 16.dp, top = 10.dp),
-                            textAlign = TextAlign.Center,
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold
-                        )
-
-                        if(member.imeRoditelja!="" && member.brojTelefonaRoditelja!="") {
-                            Column(
-                                modifier = Modifier.padding(start = 16.dp, top = 50.dp)
-                            ) {
-                                Spacer(modifier = Modifier.padding(vertical = 7.dp))
-                                Row() {
-                                    Text(
-                                        "Ime roditelja: ",
-                                        color = Color.White,
-                                        fontSize = 18.sp
-                                    )
-                                    Text(
-                                        text = member.imeRoditelja,
-                                        color = Color.White,
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 17.sp
-                                    )
-                                }
-                                Spacer(modifier = Modifier.padding(vertical = 3.dp))
-                                Row() {
-
-                                    IconButton(
-                                        onClick = {
-                                            val phoneNumber = member.brojTelefonaRoditelja
-                                            val intent = Intent(Intent.ACTION_DIAL).apply {
-                                                data = android.net.Uri.parse("tel:$phoneNumber")
-                                            }
-                                            context.startActivity(intent)
-                                        },
-                                        modifier = Modifier
-                                            .size(32.dp)
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Default.Call,
-                                            contentDescription = "Call",
-                                            tint = Color.White,
-                                            modifier = Modifier.size(30.dp)
-                                        )
-                                    }
-                                    Spacer(modifier = Modifier.padding(horizontal = 2.dp))
-                                    Text(
-                                        text = member.brojTelefonaRoditelja,
-                                        color = Color.White,
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 20.sp
-                                    )
-                                }
-                            }
-                        }
-
-                        Text(
-                            text = "Dodirni da vidiš plaćanja",
-                            modifier = Modifier
-                                .align(Alignment.BottomCenter)
-                                .padding(start = 10.dp, bottom = 4.dp),
-                            textAlign = TextAlign.Center,
-                            color = Color.LightGray,
-                            fontSize = 16.sp
-                        )
-                    }
-                    if (showPayments.value) {
-
-                        Text(
-                            text = member.fullName,
-                            fontSize = 22.sp,
-                            modifier = Modifier
-                                .padding(start = 16.dp, top = 10.dp),
-                            textAlign = TextAlign.Center,
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold
-                        )
-
-                        Row(
-                            modifier = Modifier
-                                .align(Alignment.CenterEnd)
-                                .padding(end = 5.dp)
-
-                        ){
-
-                            IconButton(
-                                onClick = {
-                                    //TODO: Napraviti screen za edit clana
-                                },
-                                modifier = Modifier
-                                    .size(32.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Edit,
-                                    contentDescription = "Edit",
-                                    tint = Color.White,
-                                    modifier = Modifier.size(30.dp)
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.padding(horizontal = 3.dp))
-
-                            IconButton(
-                                onClick = {
-                                    showDialog.value = true
-                                },
-                                modifier = Modifier
-                                    .size(32.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Delete,
-                                    contentDescription = "Delete",
-                                    tint = Color.White,
-                                    modifier = Modifier.size(30.dp)
-                                )
-                            }
-
-                        }
-
-                    }
+        if (rotation <= 90f) {
+            FrontSide(member = member, context = context)
+        } else {
+            Box(
+                modifier = Modifier.graphicsLayer {
+                    rotationY = 180f
                 }
-
-                AnimatedVisibility(visible = showPayments.value) {
-                    ButtonGrid(member)
-                }
+            ) {
+                BackSide(member = member, navController = navController, showDialog = showDialog)
             }
         }
     }
@@ -218,122 +83,266 @@ fun CardItem(
                     deleteMember(member, context)
                     showDialog.value = false
                     navController.navigate(Screen.MainScreen.route)
-                }) {
-                    Text("Yes")
-                }
+                }) { Text("Yes") }
             },
             dismissButton = {
-                Button(onClick = { showDialog.value = false }) {
-                    Text("No")
-                }
+                Button(onClick = { showDialog.value = false }) { Text("No") }
             }
         )
     }
+}
 
+@Composable
+fun FrontSide(member: Member, context: android.content.Context) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ){
+                Text(
+                    text = "Članska kartica",
+                    fontSize = 30.sp,
+                    modifier = Modifier.padding(top = 20.dp),
+                    color = Color.Black
+                )
+            }
+                Column(modifier = Modifier.padding(start = 16.dp, top = 35.dp)) {
+
+                    Row {
+                        Text("Ime i prezime: ", color = Color.Black, fontSize = 18.sp)
+                        Column(
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(end = 40.dp)
+                        ) {
+                            Text(member.fullName, color = Color.Black)
+                            Divider(
+                                color = Color.Black,
+                                thickness = 1.dp
+                            )
+                        }
+                    }
+                    if (member.imeRoditelja.isNotEmpty() && member.brojTelefonaRoditelja.isNotEmpty()) {
+
+                    Row (
+
+                    ){
+                        Column {
+                            Row(
+                                modifier = Modifier.padding(top = 40.dp)
+                            ) {
+                                Text("Ime roditelja: ", color = Color.Black, fontSize = 18.sp)
+                                Text(member.imeRoditelja, color = Color.Black)
+                            }
+
+                            Row(modifier = Modifier.padding(top = 6.dp)) {
+                                IconButton(
+                                    onClick = {
+                                        val phoneNumber = member.brojTelefonaRoditelja
+                                        val intent = Intent(Intent.ACTION_DIAL).apply {
+                                            data = android.net.Uri.parse("tel:$phoneNumber")
+                                        }
+                                        context.startActivity(intent)
+                                    },
+                                    modifier = Modifier.size(32.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Call,
+                                        contentDescription = "Call",
+                                        tint = Color.Black
+                                    )
+                                }
+
+                                Text(
+                                    member.brojTelefonaRoditelja,
+                                    color = Color.Black,
+                                    fontSize = 20.sp
+                                )
+                            }
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(top = 40.dp, end = 20.dp),
+                            contentAlignment = Alignment.BottomEnd
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.no_comment_logo),
+                                contentDescription = "Header Photo",
+                                modifier = Modifier
+                                    .size(120.dp)
+                                    .graphicsLayer(alpha = 0.7f)
+                            )
+                        }
+
+                    }
+                }
+            }
+        }
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ButtonGrid(member: Member) {
-    val showDialog = remember { mutableStateOf(false) }
-    val context = androidx.compose.ui.platform.LocalContext.current
-    val buttonColors = remember {
-        mutableStateListOf(
-            Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242),
-            Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242),
-            Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242), Color(0xFFEB4242)
-        )
-    }
+fun BackSide(
+    member: Member,
+    navController: NavController,
+    showDialog: MutableState<Boolean>
+) {
+    Column(modifier = Modifier.fillMaxSize()
+        .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White)
+                .padding(10.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = member.fullName,
+                color = Color.Black,
+                modifier = Modifier.padding(start = 10.dp),
+                fontSize = 22.sp
+            )
 
-    member.payments.forEach { payment ->
-        val monthIndex = payment.month.value - 1
-        buttonColors[monthIndex] = if (payment.amount > 0) Color.Green else Color(0xFFEB4242)
+            IconButton(onClick = { showDialog.value = true }) {
+                Icon(
+                    Icons.Default.Delete,
+                    contentDescription = "Delete",
+                    tint = Color.Gray,
+                    modifier = Modifier.size(30.dp)
+                )
+            }
+        }
+        ButtonGrid(member)
+    }
+}
+
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun ButtonGrid(member: Member) {
+    val buttonPaidState = remember {
+        mutableStateListOf(*member.payments.map { it.amount > 0 }.toTypedArray())
     }
 
     Column(
-        modifier = Modifier.fillMaxWidth()
-            .background(Color(0x37567E59))
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp)
+            .background(Color.White)
+            .padding(10.dp)
     ) {
-        Spacer(modifier = Modifier.height(8.dp))
-        Row(modifier = Modifier.fillMaxWidth()) {
-            buttonColors.subList(0, 6).forEachIndexed { index, color ->
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            member.payments.subList(0, 6).forEachIndexed { index, payment ->
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .aspectRatio(1f)
-                        .padding(4.dp)
-                        .background(color, shape = RoundedCornerShape(4.dp))
+                        .padding(2.dp)
+                        .fillMaxHeight()
+                        .border(1.dp, Color.Black, RoundedCornerShape(6.dp))
+                        .background(Color.White, RoundedCornerShape(6.dp))
                         .clickable {
-                            buttonColors[index] =
-                                if (color == Color(0xFFEB4242)) Color.Green else Color(0xFFEB4242)
-                            member.payments[index].amount =
-                                if (color == Color(0xFFEB4242)) 50 else 0
-                            updateMember(member, context)
-                        }
+                            buttonPaidState[index] = !buttonPaidState[index]
+                            payment.amount = if (buttonPaidState[index]) 50 else 0
+                        },
+                    contentAlignment = Alignment.BottomCenter
                 ) {
-                    Text(
-                        text = monthNames[index],
-                        color = Color.White,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
+                    Column(
+                        modifier = Modifier.fillMaxSize()
+                            .padding(top = 5.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        if (buttonPaidState[index]) {
+                            Icon(
+                                imageVector = Icons.Default.Check,
+                                contentDescription = "Paid",
+                                tint = Color.Green,
+                                modifier = Modifier.size(30.dp)
+                            )
+                        } else {
+                            Spacer(modifier = Modifier.height(24.dp))
+                        }
+
+                        Text(
+                            text = monthNames[index],
+                            color = Color.Black,
+                            fontSize = 14.sp,
+                            modifier = Modifier.padding(bottom = 6.dp)
+                        )
+                    }
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
-        Row(modifier = Modifier.fillMaxWidth()) {
-            buttonColors.subList(6, 12).forEachIndexed { index, color ->
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            member.payments.subList(6, 12).forEachIndexed { index, payment ->
+                val monthIndex = index + 6
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .aspectRatio(1f)
-                        .padding(4.dp)
-                        .background(color, shape = RoundedCornerShape(4.dp))
+                        .padding(2.dp)
+                        .fillMaxHeight()
+                        .border(1.dp, Color.Black, RoundedCornerShape(6.dp))
+                        .background(Color.White, RoundedCornerShape(6.dp))
                         .clickable {
-                            val monthIndex = index + 6
-                            member.payments[monthIndex].amount =
-                                if (color == Color(0xFFEB4242)) 60 else 0
-                            buttonColors[index + 6] =
-                                if (color == Color(0xFFEB4242)) Color.Green else Color(0xFFEB4242)
-                            updateMember(member, context)
-                        }
+                            buttonPaidState[monthIndex] = !buttonPaidState[monthIndex]
+                            payment.amount = if (buttonPaidState[monthIndex]) 50 else 0
+                        },
+                    contentAlignment = Alignment.BottomCenter
                 ) {
-                    Text(
-                        text = monthNames[index + 6],
-                        color = Color.White,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
+                    Column(
+                        modifier = Modifier.fillMaxSize()
+                            .padding(top = 5.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        if (buttonPaidState[monthIndex]) {
+                            Icon(
+                                imageVector = Icons.Default.Check,
+                                contentDescription = "Paid",
+                                tint = Color.Green,
+                                modifier = Modifier.size(30.dp)
+                            )
+                        } else {
+                            Spacer(modifier = Modifier.height(24.dp))
+                        }
+
+                        Text(
+                            text = monthNames[monthIndex],
+                            color = Color.Black,
+                            fontSize = 14.sp,
+                            modifier = Modifier.padding(bottom = 6.dp)
+                        )
+                    }
                 }
             }
         }
-        Spacer(modifier = Modifier.height(8.dp))
-    }
-
-    if (showDialog.value) {
-        AlertDialog(
-            onDismissRequest = { showDialog.value = false },
-            title = { Text("Update", color = Color.White) },
-            text = { Text("Do you want to update the payment?", color = Color.White) },
-            confirmButton = {
-                Button(onClick = {
-                    updateMember(member, context)
-                    showDialog.value = false
-                }) {
-                    Text("Yes")
-                }
-            },
-            dismissButton = {
-                Button(onClick = { showDialog.value = false }) {
-                    Text("No")
-                }
-            }
-        )
     }
 }
+
 
 val monthNames = listOf(
     "Jan", "Feb", "Mar", "Apr", "Maj", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 )
+

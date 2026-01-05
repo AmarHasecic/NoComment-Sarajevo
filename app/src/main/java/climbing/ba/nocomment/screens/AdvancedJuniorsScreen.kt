@@ -84,18 +84,4 @@ fun AdvancedJuniorsScreen(navController: NavController) {
         is DataState.SuccessMember -> TODO()
         is DataState.SuccessUsers -> TODO()
     }
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        FloatingActionButton(
-            onClick = {
-                navController.navigate("AddMemberScreen")
-            },
-            modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.BottomEnd),
-            backgroundColor = Color(0xFF7FEEC7)
-        ) {
-            Icon(Icons.Default.Add, contentDescription = "Add")
-        }
-    }
 }

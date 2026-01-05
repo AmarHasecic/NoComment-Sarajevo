@@ -6,6 +6,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,6 +19,7 @@ import climbing.ba.nocomment.model.Member
 import climbing.ba.nocomment.model.MemberType
 import climbing.ba.nocomment.model.Payment
 import climbing.ba.nocomment.navigation.Screen
+import climbing.ba.nocomment.reusables.BottomNavigationBar
 import java.time.Month
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -30,120 +33,139 @@ fun AddMemberScreen(navController: NavController) {
     val expanded = remember { mutableStateOf(false) }
     val context = androidx.compose.ui.platform.LocalContext.current
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Dodaj člana")
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = fullName.value,
-            onValueChange = { fullName.value = it },
-            label = { Text(text = "Ime i prezime") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = imeRoditelja.value,
-            onValueChange = { imeRoditelja.value = it },
-            label = { Text(text = "Ime roditelja") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = brojTelefonaRoditelja.value,
-            onValueChange = { brojTelefonaRoditelja.value = it },
-            label = { Text(text = "Broj telefona roditelja") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        ExposedDropdownMenuBox(
-            expanded = expanded.value,
-            onExpandedChange = { expanded.value = !expanded.value }
-        ) {
-            OutlinedTextField(
-                value = selectedType.value.name,
-                onValueChange = {},
-                readOnly = true,
-                label = { Text("Odaberi Tip Člana") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { expanded.value = true }
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Novi kolačić") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                    }
+                },
+                backgroundColor = Color.White
             )
-            ExposedDropdownMenu(
+        },
+        bottomBar = {
+            BottomNavigationBar(navController)
+        }
+    ) { innerPadding ->
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = "Dodaj člana")
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = fullName.value,
+                onValueChange = { fullName.value = it },
+                label = { Text(text = "Ime i prezime") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = imeRoditelja.value,
+                onValueChange = { imeRoditelja.value = it },
+                label = { Text(text = "Ime roditelja") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = brojTelefonaRoditelja.value,
+                onValueChange = { brojTelefonaRoditelja.value = it },
+                label = { Text(text = "Broj telefona roditelja") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            ExposedDropdownMenuBox(
                 expanded = expanded.value,
-                onDismissRequest = { expanded.value = false }
+                onExpandedChange = { expanded.value = !expanded.value }
             ) {
-                MemberType.values().forEach { type ->
-                    DropdownMenuItem(onClick = {
-                        selectedType.value = type
-                        expanded.value = false
-                    }) {
-                        Text(text = type.toString())
+                OutlinedTextField(
+                    value = selectedType.value.name,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Odaberi Tip Člana") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { expanded.value = true }
+                )
+                ExposedDropdownMenu(
+                    expanded = expanded.value,
+                    onDismissRequest = { expanded.value = false }
+                ) {
+                    MemberType.values().forEach { type ->
+                        DropdownMenuItem(onClick = {
+                            selectedType.value = type
+                            expanded.value = false
+                        }) {
+                            Text(text = type.toString())
+                        }
                     }
                 }
             }
-        }
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
-            onClick = {
-                val name = fullName.value
-                val parentName = imeRoditelja.value
-                val parentPhone = brojTelefonaRoditelja.value
+            Button(
+                onClick = {
+                    val name = fullName.value
+                    val parentName = imeRoditelja.value
+                    val parentPhone = brojTelefonaRoditelja.value
 
-                if (name.isNotEmpty()) {
-                    val payments = listOf(
-                        Payment(0, Month.JANUARY),
-                        Payment(0, Month.FEBRUARY),
-                        Payment(0, Month.MARCH),
-                        Payment(0, Month.APRIL),
-                        Payment(0, Month.MAY),
-                        Payment(0, Month.JUNE),
-                        Payment(0, Month.JULY),
-                        Payment(0, Month.AUGUST),
-                        Payment(0, Month.SEPTEMBER),
-                        Payment(0, Month.OCTOBER),
-                        Payment(0, Month.NOVEMBER),
-                        Payment(0, Month.DECEMBER)
-                    )
-                    val member = Member(
-                        id = "",
-                        fullName = name,
-                        imeRoditelja = parentName,
-                        brojTelefonaRoditelja = parentPhone,
-                        payments = payments,
-                        type = selectedType.value
-                    )
+                    if (name.isNotEmpty()) {
+                        val payments = listOf(
+                            Payment(0, Month.JANUARY),
+                            Payment(0, Month.FEBRUARY),
+                            Payment(0, Month.MARCH),
+                            Payment(0, Month.APRIL),
+                            Payment(0, Month.MAY),
+                            Payment(0, Month.JUNE),
+                            Payment(0, Month.JULY),
+                            Payment(0, Month.AUGUST),
+                            Payment(0, Month.SEPTEMBER),
+                            Payment(0, Month.OCTOBER),
+                            Payment(0, Month.NOVEMBER),
+                            Payment(0, Month.DECEMBER)
+                        )
+                        val member = Member(
+                            id = "",
+                            fullName = name,
+                            imeRoditelja = parentName,
+                            brojTelefonaRoditelja = parentPhone,
+                            payments = payments,
+                            type = selectedType.value
+                        )
 
-                    addMemberToDatabase(member, context)
-                    navController.navigate(Screen.MainScreen.route)
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color(0xFF0EA570),
-                contentColor = Color.White
-            )
-        ) {
-            Text(
-                text = "Dodaj",
-                color = Color.White
-            )
+                        addMemberToDatabase(member, context)
+                        navController.navigate(Screen.MainScreen.route)
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xFF0EA570),
+                    contentColor = Color.White
+                )
+            ) {
+                Text(
+                    text = "Dodaj",
+                    color = Color.White
+                )
+            }
         }
     }
 }

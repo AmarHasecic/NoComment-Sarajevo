@@ -48,12 +48,12 @@ suspend fun fetchData(): DataState {
 
 fun addMemberToDatabase(member: Member, context: Context) {
     val databaseReference = FirebaseDatabase.getInstance().reference
-    val memberReference = databaseReference.child("members").push() // Generate a unique key for the member
-    val memberId = memberReference.key // Get the generated ID
+    val memberReference = databaseReference.child("members").push()
+    val memberId = memberReference.key
 
     if (memberId != null) {
         member.id = memberId
-    } // Assign the generated ID to the member object
+    }
 
     memberReference.setValue(member)
         .addOnSuccessListener {

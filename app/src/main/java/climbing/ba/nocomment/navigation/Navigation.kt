@@ -14,10 +14,12 @@ import androidx.navigation.navArgument
 import climbing.ba.nocomment.screens.AddMemberScreen
 import climbing.ba.nocomment.screens.AdvancedJuniorsScreen
 import climbing.ba.nocomment.screens.EditMemberScreen
+import climbing.ba.nocomment.screens.GroupsScreen
 import climbing.ba.nocomment.screens.JuniorScreen
 import climbing.ba.nocomment.screens.LoginScreen
 import climbing.ba.nocomment.screens.PubertetlijeScreen
 import climbing.ba.nocomment.screens.RekreativciScreen
+import climbing.ba.nocomment.screens.SettingsScreen
 import climbing.ba.nocomment.screens.StarijaGrupaScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -74,7 +76,19 @@ fun Navigation(
         composable(
             route = Screen.AddMemberScreen.route
         ) {
-            AddMemberScreen(navController =navController)
+            AddMemberScreen(navController = navController)
+        }
+
+        composable(
+            route = Screen.GroupsScreen.route
+        ) {
+            GroupsScreen(navController = navController)
+        }
+
+        composable(
+            route = Screen.SettingsScreen.route
+        ) {
+            SettingsScreen(navController = navController)
         }
 
         composable(

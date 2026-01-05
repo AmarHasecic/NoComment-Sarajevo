@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import climbing.ba.nocomment.navigation.Navigation
+import climbing.ba.nocomment.scripts.addYearToAllPayments
 import climbing.ba.nocomment.ui.theme.NoCommentTheme
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.*
@@ -18,6 +19,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
+
+        //MIGRACIJA - DO NOT TOUCH
+        //addYearToAllPayments()
 
         setContent {
             NoCommentTheme {

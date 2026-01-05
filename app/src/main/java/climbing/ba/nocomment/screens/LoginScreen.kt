@@ -62,24 +62,18 @@ fun LoginScreen(navController: NavController){
     }
 
     Box(
-        modifier = Modifier.fillMaxSize()
-                           .padding(16.dp)
+        modifier = Modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
-
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 0.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.no_comment_logo),
-                    contentDescription = "Header Photo",
-                    modifier = Modifier.fillMaxWidth().padding(top = 100.dp, bottom = 20.dp)
-                )
-            }
+            Image(
+                painter = painterResource(id = R.drawable.no_comment_logo),
+                contentDescription = "Header Photo"
+            )
+            Spacer(modifier = Modifier.height(10.dp))
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
