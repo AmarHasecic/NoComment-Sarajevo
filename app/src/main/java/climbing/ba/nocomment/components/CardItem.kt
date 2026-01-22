@@ -1,5 +1,5 @@
 //noinspection UsingMaterialAndMaterial3Libraries
-package climbing.ba.nocomment.reusables
+package climbing.ba.nocomment.components
 
 import android.content.Intent
 import android.os.Build
@@ -51,7 +51,6 @@ import climbing.ba.nocomment.R
 import climbing.ba.nocomment.database.deleteMember
 import climbing.ba.nocomment.model.Member
 import climbing.ba.nocomment.model.Payment
-import climbing.ba.nocomment.navigation.Screen
 import com.google.firebase.database.FirebaseDatabase
 import java.time.Month
 

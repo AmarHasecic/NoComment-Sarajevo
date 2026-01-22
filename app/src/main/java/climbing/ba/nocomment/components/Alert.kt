@@ -1,4 +1,4 @@
-package climbing.ba.nocomment.reusables
+package climbing.ba.nocomment.components
 
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Text
@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import climbing.ba.nocomment.model.Member
 
 @Composable
 fun ShowDialog(

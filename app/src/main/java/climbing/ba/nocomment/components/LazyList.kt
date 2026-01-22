@@ -1,4 +1,4 @@
-package climbing.ba.nocomment.reusables
+package climbing.ba.nocomment.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi

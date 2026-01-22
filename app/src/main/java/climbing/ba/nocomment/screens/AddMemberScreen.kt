@@ -15,14 +15,10 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,7 +31,7 @@ import climbing.ba.nocomment.database.addMemberToDatabase
 import climbing.ba.nocomment.model.Member
 import climbing.ba.nocomment.model.MemberType
 import climbing.ba.nocomment.navigation.Screen
-import climbing.ba.nocomment.reusables.BottomNavigationBar
+import climbing.ba.nocomment.components.BottomNavigationBar
 
 @OptIn(ExperimentalMaterialApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -68,7 +64,7 @@ fun AddMemberScreen(navController: NavController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Dodaj člana")
+            Text(text = "Podaci za registraciju člana")
 
             Spacer(modifier = Modifier.height(16.dp))
 

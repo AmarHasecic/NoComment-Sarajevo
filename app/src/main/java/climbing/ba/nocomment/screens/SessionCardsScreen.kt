@@ -1,14 +1,10 @@
 package climbing.ba.nocomment.screens
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,16 +12,11 @@ import androidx.navigation.NavController
 import climbing.ba.nocomment.components.BottomNavigationBar
 
 @Composable
-fun SettingsScreen(navController: NavController) {
+fun SessionCardsScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Postavke") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                },
+                title = { Text("10 termina") },
                 backgroundColor = Color.White
             )
         },
@@ -33,9 +24,11 @@ fun SettingsScreen(navController: NavController) {
             BottomNavigationBar(navController)
         }
     ) { innerPadding ->
-        Box(
-            modifier = Modifier.padding(innerPadding)
+        LazyColumn(
+            modifier = Modifier
+                .padding(innerPadding)
         ) {
         }
     }
+
 }

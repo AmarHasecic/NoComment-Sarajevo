@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import climbing.ba.nocomment.reusables.BottomNavigationBar
+import climbing.ba.nocomment.components.BottomNavigationBar
 
 data class GroupItem(val name: String, val route: String)
 

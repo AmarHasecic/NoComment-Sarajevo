@@ -17,6 +17,7 @@ import climbing.ba.nocomment.screens.EditMemberScreen
 import climbing.ba.nocomment.screens.GroupsScreen
 //import climbing.ba.nocomment.screens.JuniorScreen
 import climbing.ba.nocomment.screens.LoginScreen
+import climbing.ba.nocomment.screens.SessionCardsScreen
 //import climbing.ba.nocomment.screens.PubertetlijeScreen
 //import climbing.ba.nocomment.screens.RekreativciScreen
 import climbing.ba.nocomment.screens.SettingsScreen
@@ -102,6 +103,12 @@ fun Navigation(
         )
         { entry ->
             entry.arguments?.getString("memberId")?.let { EditMemberScreen(navController,memberId = it) }
+        }
+
+        composable(
+            route = Screen.SessionCardsScreen.route
+        ) {
+            SessionCardsScreen(navController = navController)
         }
 
     }
