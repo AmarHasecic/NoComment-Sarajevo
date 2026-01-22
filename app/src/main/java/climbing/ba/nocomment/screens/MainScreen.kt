@@ -15,32 +15,39 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import climbing.ba.nocomment.R
 import climbing.ba.nocomment.database.fetchData
+import climbing.ba.nocomment.model.Member
 import climbing.ba.nocomment.reusables.BottomNavigationBar
 import climbing.ba.nocomment.reusables.SearchBar
 import climbing.ba.nocomment.reusables.ShowLazyList
 import climbing.ba.nocomment.sealed.DataState
 import java.time.Year
 
-@SuppressLint("MutableCollectionMutableState")
 @RequiresApi(Build.VERSION_CODES.O)
+@SuppressLint("MutableCollectionMutableState")
 @Composable
 fun MainScreen(navController: NavController) {
 
     val dataState = remember { mutableStateOf<DataState>(DataState.Loading) }
     val searchQuery = remember { mutableStateOf("") }
-
-    // Selected year state
     val selectedYear = remember { mutableStateOf(Year.now().value) }
     var expanded by remember { mutableStateOf(false) }
 
+    // This will hold the live member list
+    val memberList = remember { mutableStateListOf<Member>() }
+
     LaunchedEffect(Unit) {
-        dataState.value = fetchData()
+        when (val state = fetchData()) {
+            is DataState.Success -> {
+                memberList.clear()
+                memberList.addAll(state.data)
+                dataState.value = state
+            }
+            else -> dataState.value = state
+        }
     }
 
     Scaffold(
-        bottomBar = {
-            BottomNavigationBar(navController)
-        }
+        bottomBar = { BottomNavigationBar(navController) }
     ) { innerPadding ->
 
         Box(
@@ -48,7 +55,7 @@ fun MainScreen(navController: NavController) {
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            Box (
+            Box(
                 modifier = Modifier.align(Alignment.TopEnd)
                     .padding(top = 5.dp, end = 10.dp)
             ) {
@@ -56,14 +63,11 @@ fun MainScreen(navController: NavController) {
                     Text(
                         text = selectedYear.value.toString(),
                         color = Color.DarkGray,
-                        fontSize = 25.sp
+                        fontSize = 20.sp
                     )
                 }
 
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
+                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                     val currentYear = Year.now().value
                     (currentYear - 2..currentYear).forEach { year ->
                         DropdownMenuItem(onClick = {
@@ -74,21 +78,17 @@ fun MainScreen(navController: NavController) {
                                 modifier = Modifier.fillMaxSize(),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(
-                                    text = year.toString(),
-                                    color = Color.DarkGray,
-                                    fontSize = 20.sp
-                                )
+                                Text(text = year.toString(), color = Color.DarkGray, fontSize = 20.sp)
                             }
                         }
                     }
                 }
             }
+
             Column(
                 modifier = Modifier.padding(horizontal = 2.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -100,8 +100,6 @@ fun MainScreen(navController: NavController) {
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
-
-                // Search bar
                 SearchBar(searchQuery.value) { newQuery ->
                     searchQuery.value = newQuery
                 }
@@ -110,54 +108,40 @@ fun MainScreen(navController: NavController) {
 
                 when (val state = dataState.value) {
                     is DataState.Success -> {
-                        var memberList by remember { mutableStateOf(state.data) }
+                        ShowLazyList(
+                            members = memberList
+                                .filter { it.fullName.contains(searchQuery.value, ignoreCase = true) }
+                                .toMutableList(),
+                            navController = navController,
+                            year = selectedYear.value,
+                            onMemberDeleted = { deletedMember ->
+                                memberList.remove(deletedMember)
+                            },
+                            onMemberUpdated = { updatedMember ->
+                                val index = memberList.indexOfFirst { it.id == updatedMember.id }
+                                if (index >= 0) {
+                                    memberList[index] = updatedMember
+                                }
+                            }
+                        )
+                    }
 
-                        Column {
-                            Spacer(modifier = Modifier.height(8.dp))
+                    is DataState.Failure -> Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) { Text(state.message, fontSize = MaterialTheme.typography.h5.fontSize) }
 
-                            ShowLazyList(
-                                memberList
-                                    .filter { member ->
-                                        member.fullName.contains(searchQuery.value, ignoreCase = true)
-                                    }
-                                    .toMutableList(),
-                                navController,
-                                year = selectedYear.value
-                            )
-                        }
-                    }
-                    is DataState.Failure -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = state.message,
-                                fontSize = MaterialTheme.typography.h5.fontSize,
-                            )
-                        }
-                    }
-                    DataState.Loading -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
-                        }
-                    }
-                    DataState.Empty -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "Nema dodanih članova kluba",
-                                fontSize = MaterialTheme.typography.h5.fontSize,
-                            )
-                        }
-                    }
-                    is DataState.SuccessMember -> TODO()
-                    is DataState.SuccessUsers -> TODO()
+                    DataState.Loading -> Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) { CircularProgressIndicator() }
+
+                    DataState.Empty -> Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) { Text("Nema dodanih članova kluba", fontSize = MaterialTheme.typography.h5.fontSize) }
+
+                    else -> {}
                 }
             }
         }

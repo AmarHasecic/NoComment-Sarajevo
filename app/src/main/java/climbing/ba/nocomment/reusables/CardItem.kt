@@ -60,15 +60,14 @@ import java.time.Month
 fun CardItem(
     member: Member,
     navController: NavController,
-    year: Int
+    year: Int,
+    onMemberDeleted: (Member) -> Unit,
+    onMemberUpdated: (Member) -> Unit
 ) {
     val context = LocalContext.current
     val showDialog = remember { mutableStateOf(false) }
     val flipped = remember { mutableStateOf(false) }
-    val rotation = animateFloatAsState(
-        targetValue = if (flipped.value) 180f else 0f
-    ).value
-
+    val rotation = animateFloatAsState(if (flipped.value) 180f else 0f).value
     val paymentsState = remember { member.payments.toMutableStateList() }
 
     Card(
@@ -77,24 +76,24 @@ fun CardItem(
             .height(260.dp)
             .padding(10.dp)
             .clickable { flipped.value = !flipped.value }
-            .graphicsLayer {
-                rotationY = rotation
-                cameraDistance = 12f * density
-            },
+            .graphicsLayer { rotationY = rotation; cameraDistance = 12f * density },
         elevation = 3.dp,
         shape = RoundedCornerShape(11.dp)
     ) {
         if (rotation <= 90f) {
-            FrontSide(member = member, context = context)
+            FrontSide(member, context)
         } else {
-            Box(
-                modifier = Modifier.graphicsLayer { rotationY = 180f }
-            ) {
+            Box(modifier = Modifier.graphicsLayer { rotationY = 180f }) {
                 BackSide(
                     member = member,
                     paymentsState = paymentsState,
                     showDialog = showDialog,
-                    year = year
+                    year = year,
+                    onPaymentsChanged = { updatedPayments ->
+                        // Update member payments and propagate up
+                        val updatedMember = member.copy(payments = updatedPayments)
+                        onMemberUpdated(updatedMember)
+                    }
                 )
             }
         }
@@ -109,7 +108,7 @@ fun CardItem(
                 Button(onClick = {
                     deleteMember(member, context)
                     showDialog.value = false
-                    navController.navigate(Screen.MainScreen.route)
+                    onMemberDeleted(member) // Remove from main list
                 }) { Text("Yes") }
             },
             dismissButton = {
@@ -118,6 +117,7 @@ fun CardItem(
         )
     }
 }
+
 
 
 @Composable
@@ -212,7 +212,8 @@ fun BackSide(
     member: Member,
     paymentsState: SnapshotStateList<Payment>,
     showDialog: MutableState<Boolean>,
-    year: Int
+    year: Int,
+    onPaymentsChanged: (List<Payment>) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -244,13 +245,26 @@ fun BackSide(
             }
         }
 
-        ButtonGrid(member = member, paymentsState = paymentsState, year = year)
+        ButtonGrid(
+            member = member,
+            paymentsState = paymentsState,
+            year = year,
+            onPaymentsChanged = onPaymentsChanged
+        )
     }
 }
 
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ButtonGrid(member: Member, paymentsState: SnapshotStateList<Payment>, year: Int) {
+fun ButtonGrid(
+    member: Member,
+    paymentsState: SnapshotStateList<Payment>,
+    year: Int,
+    onPaymentsChanged: (List<Payment>) -> Unit
+) {
+    val databaseReference = FirebaseDatabase.getInstance().reference
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -268,7 +282,7 @@ fun ButtonGrid(member: Member, paymentsState: SnapshotStateList<Payment>, year: 
                     val monthIndex = rowIndex * 6 + colIndex
                     val month = Month.of(monthIndex + 1)
 
-                    var payment = paymentsState.find { it.month == month && it.year == year }
+                    val payment = paymentsState.find { it.month == month && it.year == year }
                     val isPaid = (payment?.amount ?: 0) > 0
 
                     Box(
@@ -279,7 +293,6 @@ fun ButtonGrid(member: Member, paymentsState: SnapshotStateList<Payment>, year: 
                             .border(1.dp, Color.Black, RoundedCornerShape(6.dp))
                             .background(Color.White, RoundedCornerShape(6.dp))
                             .clickable {
-                                val databaseReference = FirebaseDatabase.getInstance().reference
                                 val memberRef = databaseReference.child("members").child(member.id)
 
                                 if (payment == null) {
@@ -287,9 +300,13 @@ fun ButtonGrid(member: Member, paymentsState: SnapshotStateList<Payment>, year: 
                                     paymentsState.add(newPayment)
                                 } else {
                                     paymentsState.remove(payment)
-                                    payment = null
                                 }
+
+                                // Update Firebase
                                 memberRef.child("payments").setValue(paymentsState)
+
+                                // Notify parent about payment change
+                                onPaymentsChanged(paymentsState.toList())
                             },
                         contentAlignment = Alignment.BottomCenter
                     ) {
@@ -325,6 +342,7 @@ fun ButtonGrid(member: Member, paymentsState: SnapshotStateList<Payment>, year: 
         }
     }
 }
+
 
 val monthNames = listOf(
     "Jan", "Feb", "Mar", "Apr", "Maj", "Jun",

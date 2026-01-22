@@ -12,15 +12,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import climbing.ba.nocomment.screens.AddMemberScreen
-import climbing.ba.nocomment.screens.AdvancedJuniorsScreen
+//import climbing.ba.nocomment.screens.AdvancedJuniorsScreen
 import climbing.ba.nocomment.screens.EditMemberScreen
 import climbing.ba.nocomment.screens.GroupsScreen
-import climbing.ba.nocomment.screens.JuniorScreen
+//import climbing.ba.nocomment.screens.JuniorScreen
 import climbing.ba.nocomment.screens.LoginScreen
-import climbing.ba.nocomment.screens.PubertetlijeScreen
-import climbing.ba.nocomment.screens.RekreativciScreen
+//import climbing.ba.nocomment.screens.PubertetlijeScreen
+//import climbing.ba.nocomment.screens.RekreativciScreen
 import climbing.ba.nocomment.screens.SettingsScreen
-import climbing.ba.nocomment.screens.StarijaGrupaScreen
+//import climbing.ba.nocomment.screens.StarijaGrupaScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -42,36 +42,36 @@ fun Navigation(
         ) {
             MainScreen(navController = navController)
         }
-
-        composable(
-            route = Screen.JuniorScreen.route
-        ) {
-            JuniorScreen(navController = navController)
-        }
-
-        composable(
-            route = Screen.AdvancedJuniorsScreen.route
-        ) {
-            AdvancedJuniorsScreen(navController = navController)
-        }
-
-        composable(
-            route = Screen.StarijaGrupaScreen.route
-        ) {
-            StarijaGrupaScreen(navController = navController)
-        }
-
-        composable(
-            route = Screen.RekreativciScreen.route
-        ) {
-            RekreativciScreen(navController = navController)
-        }
-
-        composable(
-            route = Screen.PubertetlijeScreen.route
-        ) {
-            PubertetlijeScreen(navController = navController)
-        }
+//
+//        composable(
+//            route = Screen.JuniorScreen.route
+//        ) {
+//            JuniorScreen(navController = navController)
+//        }
+//
+//        composable(
+//            route = Screen.AdvancedJuniorsScreen.route
+//        ) {
+//            AdvancedJuniorsScreen(navController = navController)
+//        }
+//
+//        composable(
+//            route = Screen.StarijaGrupaScreen.route
+//        ) {
+//            StarijaGrupaScreen(navController = navController)
+//        }
+//
+//        composable(
+//            route = Screen.RekreativciScreen.route
+//        ) {
+//            RekreativciScreen(navController = navController)
+//        }
+//
+//        composable(
+//            route = Screen.PubertetlijeScreen.route
+//        ) {
+//            PubertetlijeScreen(navController = navController)
+//        }
 
         composable(
             route = Screen.AddMemberScreen.route

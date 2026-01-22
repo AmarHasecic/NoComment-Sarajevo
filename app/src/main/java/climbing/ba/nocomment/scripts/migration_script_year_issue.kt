@@ -13,7 +13,7 @@ data class PaymentWithYear(
 
 fun addYearToAllPayments() {
     val databaseReference = FirebaseDatabase.getInstance().reference.child("members")
-    val defaultYear = Calendar.getInstance().get(Calendar.YEAR)
+    val defaultYear = Calendar.getInstance().get(Calendar.YEAR) - 1
 
     databaseReference.get().addOnSuccessListener { snapshot ->
         snapshot.children.forEach { memberSnapshot ->

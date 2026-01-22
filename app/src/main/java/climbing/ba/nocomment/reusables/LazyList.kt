@@ -2,8 +2,7 @@ package climbing.ba.nocomment.reusables
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,23 +17,28 @@ import climbing.ba.nocomment.model.Member
 fun ShowLazyList(
     members: MutableList<Member>,
     navController: NavController,
-    year: Int
+    year: Int,
+    onMemberDeleted: (Member) -> Unit,
+    onMemberUpdated: (Member) -> Unit
 ) {
     LazyColumn {
-        items(members) { member ->
+        items(
+            items = members,
+            key = { it.id } // <-- BITNO!!!
+        ) { member ->
             CardItem(
                 member = member,
                 navController = navController,
-                year = year
+                year = year,
+                onMemberDeleted = onMemberDeleted,
+                onMemberUpdated = onMemberUpdated
             )
         }
+
         item {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-            ) {
-            }
+            Spacer(modifier = Modifier.height(150.dp))
         }
     }
 }
+
+
