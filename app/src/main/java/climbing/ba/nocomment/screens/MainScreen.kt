@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -24,17 +23,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import climbing.ba.nocomment.R
 import climbing.ba.nocomment.components.BottomNavigationBar
+import climbing.ba.nocomment.components.LoadingAnimation
 import climbing.ba.nocomment.components.SearchBar
 import climbing.ba.nocomment.components.ShowLazyList
 import climbing.ba.nocomment.components.YearPicker
 import climbing.ba.nocomment.database.fetchData
 import climbing.ba.nocomment.model.Member
 import climbing.ba.nocomment.sealed.DataState
+import kotlinx.coroutines.delay
 import java.time.Year
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -48,7 +50,16 @@ fun MainScreen(navController: NavController) {
     val memberList = remember { mutableStateListOf<Member>() }
 
     LaunchedEffect(Unit) {
-        when (val state = fetchData()) {
+        val startTime = System.currentTimeMillis()
+        val state = fetchData()
+        val elapsed = System.currentTimeMillis() - startTime
+        val minLoadingTime = 1700L
+        //Just for animation purposes
+        if (elapsed < minLoadingTime) {
+            delay(minLoadingTime - elapsed)
+        }
+
+        when (state) {
             is DataState.Success -> {
                 memberList.clear()
                 memberList.addAll(state.data)
@@ -63,7 +74,7 @@ fun MainScreen(navController: NavController) {
         topBar = {
             Column(
                 modifier = Modifier.fillMaxWidth()
-                    .background(Color(0xFF0EA570))
+                    .background(Color(0xFF0F8070))
             ) {
                 Row(
                     modifier = Modifier
@@ -72,13 +83,11 @@ fun MainScreen(navController: NavController) {
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-
                     Image(
                         painter = painterResource(id = R.drawable.no_comment_logo_black),
                         contentDescription = "Header Photo",
                         modifier = Modifier.size(height = 70.dp, width = 140.dp)
                     )
-
                     YearPicker(selectedYear = selectedYear)
                 }
                 SearchBar(searchQuery.value) { newQuery ->
@@ -92,30 +101,31 @@ fun MainScreen(navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .background(color = colorResource(id = R.color.gray))
         ) {
             when (val state = dataState.value) {
                 is DataState.Success -> {
-                    ShowLazyList(
-                        members = memberList
-                            .filter {
-                                it.fullName.contains(
-                                    searchQuery.value,
-                                    ignoreCase = true
-                                )
+                        ShowLazyList(
+                            members = memberList
+                                .filter {
+                                    it.fullName.contains(
+                                        searchQuery.value,
+                                        ignoreCase = true
+                                    )
+                                }
+                                .toMutableList(),
+                            navController = navController,
+                            year = selectedYear.value,
+                            onMemberDeleted = { deletedMember ->
+                                memberList.remove(deletedMember)
+                            },
+                            onMemberUpdated = { updatedMember ->
+                                val index = memberList.indexOfFirst { it.id == updatedMember.id }
+                                if (index >= 0) {
+                                    memberList[index] = updatedMember
+                                }
                             }
-                            .toMutableList(),
-                        navController = navController,
-                        year = selectedYear.value,
-                        onMemberDeleted = { deletedMember ->
-                            memberList.remove(deletedMember)
-                        },
-                        onMemberUpdated = { updatedMember ->
-                            val index = memberList.indexOfFirst { it.id == updatedMember.id }
-                            if (index >= 0) {
-                                memberList[index] = updatedMember
-                            }
-                        }
-                    )
+                        )
                 }
 
                 is DataState.Failure -> Box(
@@ -123,10 +133,9 @@ fun MainScreen(navController: NavController) {
                     contentAlignment = Alignment.Center
                 ) { Text(state.message, fontSize = MaterialTheme.typography.h5.fontSize) }
 
-                DataState.Loading -> Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) { CircularProgressIndicator() }
+                DataState.Loading -> {
+                    LoadingAnimation()
+                }
 
                 DataState.Empty -> Box(
                     modifier = Modifier.fillMaxSize(),
@@ -137,7 +146,6 @@ fun MainScreen(navController: NavController) {
                         fontSize = MaterialTheme.typography.h5.fontSize
                     )
                 }
-
                 else -> {}
             }
         }

@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -51,11 +52,11 @@ fun LoginScreen(navController: NavController){
         moveTo(0f, 0f)
         lineTo(0f, size.height * 0.8f)
         cubicTo(
-            size.width * 0.25f, size.height * 0.6f, // control point 1 (dipped)
-            size.width * 0.75f, size.height,       // control point 2 (dipped)
-            size.width, size.height * 0.8f          // end point
+            size.width * 0.25f, size.height * 0.6f,
+            size.width * 0.75f, size.height,
+            size.width, size.height * 0.8f
         )
-        lineTo(size.width, 0f) // top-right
+        lineTo(size.width, 0f)
         close()
     }
 
@@ -75,6 +76,7 @@ fun LoginScreen(navController: NavController){
 
     Box(
         modifier = Modifier.fillMaxSize()
+            .background(color = colorResource(id = R.color.gray))
     ) {
         Image(
             painter = painterResource(id = R.drawable.login_cover),
@@ -123,7 +125,7 @@ fun LoginScreen(navController: NavController){
                     .fillMaxWidth(0.85f)
                     .height(50.dp),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFF0EA570),
+                    backgroundColor = Color(0xFF0F8070),
                     contentColor = Color.White
                 )
             ) {
@@ -131,7 +133,7 @@ fun LoginScreen(navController: NavController){
             }
             Spacer(modifier = Modifier.height(35.dp))
             Text(
-                text = "Napomena: Pristup aplikaciji zahteva tajni kod koji možete dobiti samo od Amara Hasečića. Molimo vas da kontaktirate Amara kako biste zatražili pristup.",
+                text = "Napomena: Za pristup aplikaciji je potreban tajni kod koji možete dobiti samo od Amara Hasečića. Molimo vas da kontaktirate Amara kako biste zatražili pristup.",
                 fontSize = 12.sp,
                 color = Color.DarkGray,
                 modifier = Modifier

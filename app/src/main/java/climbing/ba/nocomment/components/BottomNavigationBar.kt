@@ -37,19 +37,6 @@ fun BottomNavigationBar(navController: NavController) {
         )
 
         BottomNavigationItem(
-            selected = currentRoute == Screen.AddMemberScreen.route,
-            onClick = { navController.navigate(Screen.AddMemberScreen.route) },
-            icon = {
-                Icon(
-                    Icons.Default.AddCircle,
-                    contentDescription = "Add",
-                    tint = if (currentRoute == Screen.AddMemberScreen.route) Color.Black else Color.Gray
-                )
-            },
-            label = { Text("Dodaj člana") }
-        )
-
-        BottomNavigationItem(
             selected = currentRoute == Screen.SessionCardsScreen.route,
             onClick = { navController.navigate(Screen.SessionCardsScreen.route) },
             icon = {
@@ -61,6 +48,19 @@ fun BottomNavigationBar(navController: NavController) {
                 )
             },
             label = { Text("10 termina") }
+        )
+
+        BottomNavigationItem(
+            selected = currentRoute == Screen.AddMemberScreen.route,
+            onClick = { navController.navigate(Screen.AddMemberScreen.route) },
+            icon = {
+                Icon(
+                    Icons.Default.AddCircle,
+                    contentDescription = "Add",
+                    tint = if (currentRoute == Screen.AddMemberScreen.route) Color.Black else Color.Gray
+                )
+            },
+            label = { Text("Dodaj člana") }
         )
 
         BottomNavigationItem(

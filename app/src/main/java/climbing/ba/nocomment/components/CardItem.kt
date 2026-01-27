@@ -76,7 +76,7 @@ fun CardItem(
             .padding(10.dp)
             .clickable { flipped.value = !flipped.value }
             .graphicsLayer { rotationY = rotation; cameraDistance = 12f * density },
-        elevation = 3.dp,
+        elevation = 4.dp,
         shape = RoundedCornerShape(11.dp)
     ) {
         if (rotation <= 90f) {
@@ -125,7 +125,6 @@ fun FrontSide(member: Member, context: android.content.Context) {
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             Box(
@@ -217,7 +216,6 @@ fun BackSide(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
     ) {
         Row(
             modifier = Modifier
