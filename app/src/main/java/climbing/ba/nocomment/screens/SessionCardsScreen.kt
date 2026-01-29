@@ -28,6 +28,7 @@ import androidx.navigation.NavController
 import climbing.ba.nocomment.R
 import climbing.ba.nocomment.components.BottomNavigationBar
 import climbing.ba.nocomment.components.LoadingAnimation
+import climbing.ba.nocomment.components.ProgressIndicator
 import climbing.ba.nocomment.components.SearchBar
 import climbing.ba.nocomment.database.fetchData
 import climbing.ba.nocomment.model.Member
@@ -108,6 +109,7 @@ fun SessionCardsScreen(navController: NavController) {
 
                 DataState.Loading -> {
                     LoadingAnimation()
+                    ProgressIndicator()
                 }
 
                 DataState.Empty -> Box(

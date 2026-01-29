@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -30,6 +31,7 @@ import androidx.navigation.NavController
 import climbing.ba.nocomment.R
 import climbing.ba.nocomment.components.BottomNavigationBar
 import climbing.ba.nocomment.components.LoadingAnimation
+import climbing.ba.nocomment.components.ProgressIndicator
 import climbing.ba.nocomment.components.SearchBar
 import climbing.ba.nocomment.components.ShowLazyList
 import climbing.ba.nocomment.components.YearPicker
@@ -135,6 +137,7 @@ fun MainScreen(navController: NavController) {
 
                 DataState.Loading -> {
                     LoadingAnimation()
+                    ProgressIndicator()
                 }
 
                 DataState.Empty -> Box(
