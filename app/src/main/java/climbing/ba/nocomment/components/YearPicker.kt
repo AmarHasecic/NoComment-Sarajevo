@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,14 +46,14 @@ fun YearPicker(
         ) {
             Text(
                 text = selectedYear.value.toString(),
-                color = Color(0xFF1F1F1F),
+                color = colorResource(id = climbing.ba.nocomment.R.color.no_comment_dark_gray),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
             Icon(
                 imageVector = Icons.Default.ArrowDropDown,
                 contentDescription = "Dropdown",
-                tint = Color(0xFF1F1F1F)
+                tint = colorResource(id = climbing.ba.nocomment.R.color.no_comment_dark_gray)
             )
         }
 

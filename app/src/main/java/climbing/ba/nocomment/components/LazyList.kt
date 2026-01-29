@@ -27,7 +27,7 @@ fun ShowLazyList(
     onMemberUpdated: (Member) -> Unit
 ) {
     LazyColumn (
-        modifier = Modifier .background(color = colorResource(id = R.color.gray))
+        modifier = Modifier .background(color = colorResource(id = R.color.no_comment_gray))
     ){
         items(
             items = members,

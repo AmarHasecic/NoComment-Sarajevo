@@ -1,18 +1,28 @@
 package climbing.ba.nocomment.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import climbing.ba.nocomment.R
 import climbing.ba.nocomment.navigation.Screen
@@ -21,61 +31,73 @@ import climbing.ba.nocomment.navigation.Screen
 fun BottomNavigationBar(navController: NavController) {
     val currentRoute = navController.currentBackStackEntry?.destination?.route
 
-    BottomNavigation(backgroundColor = Color.White) {
-
-        BottomNavigationItem(
-            selected = currentRoute == Screen.MainScreen.route,
-            onClick = { navController.navigate(Screen.MainScreen.route) },
-            icon = {
-                Icon(
-                    Icons.Default.Home,
-                    contentDescription = "Home",
-                    tint = if (currentRoute == Screen.MainScreen.route) Color.Black else Color.Gray
-                )
-            },
-            label = { Text("Home") }
+    BottomNavigation(
+        backgroundColor = Color.White,
+        modifier = Modifier.height(80.dp)
+    ) {
+        val items = listOf(
+            Triple(
+                "Home",
+                painterResource(id = R.drawable.skenderija_logo),
+                Screen.MainScreen.route
+            ),
+            Triple(
+                "10 termina",
+                painterResource(id = R.drawable.session_cards),
+                Screen.SessionCardsScreen.route
+            ),
+            Triple(
+                "Dodaj člana",
+                painterResource(id = R.drawable.add),
+                Screen.AddMemberScreen.route
+            ),
+            Triple("Grupe", painterResource(id = R.drawable.group), Screen.GroupsScreen.route)
         )
 
-        BottomNavigationItem(
-            selected = currentRoute == Screen.SessionCardsScreen.route,
-            onClick = { navController.navigate(Screen.SessionCardsScreen.route) },
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.session_cards),
-                    contentDescription = "Kartice 10 termina",
-                    modifier = Modifier.size(24.dp),
-                    tint = if (currentRoute == Screen.SessionCardsScreen.route) Color.Black else Color.Gray
-                )
-            },
-            label = { Text("10 termina") }
-        )
+        items.forEach { (label, icon, route) ->
+            val selected = currentRoute == route
 
-        BottomNavigationItem(
-            selected = currentRoute == Screen.AddMemberScreen.route,
-            onClick = { navController.navigate(Screen.AddMemberScreen.route) },
-            icon = {
-                Icon(
-                    Icons.Default.AddCircle,
-                    contentDescription = "Add",
-                    tint = if (currentRoute == Screen.AddMemberScreen.route) Color.Black else Color.Gray
-                )
-            },
-            label = { Text("Dodaj člana") }
-        )
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) { navController.navigate(route) },
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.size(width = 75.dp, height = 40.dp)
+                ) {
+                    if (selected) {
+                        Box(
+                            modifier = Modifier
+                                .matchParentSize()
+                                .background(
+                                    color = Color(0xFFB8E6C7).copy(alpha = 0.9f),
+                                    shape = CircleShape
+                                )
+                        )
+                    }
+                    Icon(
+                        painter = icon,
+                        contentDescription = label,
+                        tint = if (selected) colorResource(id = R.color.no_comment_dark_gray) else Color.Gray,
+                        modifier = Modifier.size(30.dp)
+                    )
 
-        BottomNavigationItem(
-            selected = currentRoute == Screen.GroupsScreen.route,
-            onClick = { navController.navigate(Screen.GroupsScreen.route) },
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.group),
-                    contentDescription = "Grupe",
-                    modifier = Modifier.size(24.dp),
-                    tint = if (currentRoute == Screen.GroupsScreen.route) Color.Black else Color.Gray
+                }
+
+                Spacer(modifier = Modifier.height(3.dp))
+                Text(
+                    text = label,
+                    fontSize = 15.sp,
+                    color = if (selected) colorResource(id = R.color.no_comment_dark_gray) else Color.Gray
                 )
-            },
-            label = { Text("Grupe") }
-        )
+            }
+        }
     }
 }
-

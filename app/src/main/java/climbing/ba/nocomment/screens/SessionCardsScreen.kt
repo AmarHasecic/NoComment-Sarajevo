@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import climbing.ba.nocomment.R
 import climbing.ba.nocomment.components.BottomNavigationBar
+import climbing.ba.nocomment.components.FloatingAddButton
 import climbing.ba.nocomment.components.LoadingAnimation
 import climbing.ba.nocomment.components.ProgressIndicator
 import climbing.ba.nocomment.components.SearchBar
@@ -93,8 +94,9 @@ fun SessionCardsScreen(navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(color = colorResource(id = R.color.gray))
+                .background(color = colorResource(id = R.color.no_comment_gray))
         ) {
+            FloatingAddButton()
             when (val state = dataState.value) {
                 is DataState.Success -> {
                  //TODO: Prikazi listu kartica

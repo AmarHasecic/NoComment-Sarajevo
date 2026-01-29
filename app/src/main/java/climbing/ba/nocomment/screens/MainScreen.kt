@@ -103,7 +103,7 @@ fun MainScreen(navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(color = colorResource(id = R.color.gray))
+                .background(color = colorResource(id = R.color.no_comment_gray))
         ) {
             when (val state = dataState.value) {
                 is DataState.Success -> {

@@ -76,7 +76,7 @@ fun LoginScreen(navController: NavController){
 
     Box(
         modifier = Modifier.fillMaxSize()
-            .background(color = colorResource(id = R.color.gray))
+            .background(color = colorResource(id = R.color.no_comment_gray))
     ) {
         Image(
             painter = painterResource(id = R.drawable.login_cover),

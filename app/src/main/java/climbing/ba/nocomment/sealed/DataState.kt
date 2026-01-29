@@ -1,6 +1,7 @@
 package climbing.ba.nocomment.sealed
 
 import climbing.ba.nocomment.model.Member
+import climbing.ba.nocomment.model.TenSessionCard
 import climbing.ba.nocomment.model.User
 
 sealed class DataState {
@@ -10,4 +11,5 @@ sealed class DataState {
     class Failure(val message: String) : DataState()
     object Loading : DataState()
     object Empty : DataState()
+    class SuccessCards(val data: MutableList<TenSessionCard>) : DataState()
 }

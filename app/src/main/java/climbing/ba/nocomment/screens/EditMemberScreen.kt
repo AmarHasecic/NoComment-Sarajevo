@@ -151,7 +151,9 @@ fun EditMemberScreen(navController: NavController, memberId: String) {
             }
         }
 
-        is DataState.Success -> TODO() //Ovo se nikad ne može dogoditi svakako
+        //Ovo se nikad ne može dogoditi svakako
+        is DataState.Success -> TODO()
         is DataState.SuccessUsers -> TODO()
+        is DataState.SuccessCards -> TODO()
     }
 }

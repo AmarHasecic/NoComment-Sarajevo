@@ -1,14 +1,18 @@
 package climbing.ba.nocomment.database
 
 import android.content.Context
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import climbing.ba.nocomment.model.Member
+import climbing.ba.nocomment.model.TenSessionCard
 import climbing.ba.nocomment.model.User
 import climbing.ba.nocomment.sealed.DataState
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.tasks.await
+import java.time.LocalDate
 
 
 fun makeToast(context: Context, message: String){
@@ -157,9 +161,80 @@ fun updateUserPassword(id: String, newPassword: String, context: Context) {
         }
 }
 
+fun addTenSessionCard(card: TenSessionCard, context: Context) {
+    val databaseReference = FirebaseDatabase.getInstance().reference
+    val cardReference = databaseReference.child("tenSessionCards").push()
+    val cardId = cardReference.key
 
+    if (cardId != null) {
+        card.id = cardId
+    }
 
+    cardReference.setValue(card)
+        .addOnSuccessListener {
+            makeToast(context, "Kartica uspješno kreirana")
+        }
+        .addOnFailureListener { exception ->
+            makeToast(context, "Error: ${exception.message}")
+        }
+}
 
+fun updateTenSessionCard(card: TenSessionCard, context: Context) {
+    val databaseReference = FirebaseDatabase.getInstance().reference
+    val cardReference = databaseReference.child("tenSessionCards").child(card.id)
 
+    cardReference.setValue(card)
+        .addOnSuccessListener {
+            makeToast(context, "Kartica uspješno ažurirana")
+        }
+        .addOnFailureListener { exception ->
+            makeToast(context, "Error: ${exception.message}")
+        }
+}
 
+fun deleteTenSessionCard(card: TenSessionCard, context: Context) {
+    val databaseReference = FirebaseDatabase.getInstance().reference
+    val cardReference = databaseReference.child("tenSessionCards").child(card.id)
 
+    cardReference.removeValue()
+        .addOnSuccessListener {
+            makeToast(context, "Kartica obrisana")
+        }
+        .addOnFailureListener { exception ->
+            makeToast(context, "Error: ${exception.message}")
+        }
+}
+suspend fun fetchTenSessionCards(): DataState {
+    val databaseReference = FirebaseDatabase.getInstance().reference
+    val cardsReference = databaseReference.child("tenSessionCards")
+
+    val cardList = mutableListOf<TenSessionCard>()
+
+    return try {
+        val dataSnapshot = cardsReference.get().await()
+
+        if (dataSnapshot.exists()) {
+            for (childSnapshot in dataSnapshot.children) {
+                val card = childSnapshot.getValue(TenSessionCard::class.java)
+                card?.let { cardList.add(it) }
+            }
+            DataState.SuccessCards(cardList)
+        } else {
+            DataState.Empty
+        }
+    } catch (e: Exception) {
+        DataState.Failure(e.message ?: "An error occurred")
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun useSession(card: TenSessionCard, sessionIndex: Int) {
+    if (sessionIndex in 0..9) {
+        val updatedSessions = card.sessions.toMutableList()
+        updatedSessions[sessionIndex] = updatedSessions[sessionIndex].copy(
+            isUsed = true,
+            date = LocalDate.now().toString()
+        )
+        card.sessions = updatedSessions
+    }
+}
