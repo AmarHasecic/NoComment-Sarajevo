@@ -31,8 +31,8 @@ import climbing.ba.nocomment.components.LoadingAnimation
 import climbing.ba.nocomment.components.ProgressIndicator
 import climbing.ba.nocomment.components.SearchBar
 import climbing.ba.nocomment.components.ToggleArchived
-import climbing.ba.nocomment.database.fetchData
-import climbing.ba.nocomment.model.Member
+import climbing.ba.nocomment.database.fetchTenSessionCards
+import climbing.ba.nocomment.model.TenSessionCard
 import climbing.ba.nocomment.sealed.DataState
 import kotlinx.coroutines.delay
 
@@ -40,12 +40,12 @@ import kotlinx.coroutines.delay
 fun SessionCardsScreen(navController: NavController) {
     val dataState = remember { mutableStateOf<DataState>(DataState.Loading) }
     val searchQuery = remember { mutableStateOf("") }
-    val memberList = remember { mutableStateListOf<Member>() }
+    val cards = remember { mutableStateListOf<TenSessionCard>() }
     val showArchived = remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         val startTime = System.currentTimeMillis()
-        val state = fetchData()
+        val state = fetchTenSessionCards()
         val elapsed = System.currentTimeMillis() - startTime
         val minLoadingTime = 1700L
         //Just for animation purposes
@@ -54,9 +54,9 @@ fun SessionCardsScreen(navController: NavController) {
         }
 
         when (state) {
-            is DataState.Success -> {
-                memberList.clear()
-                memberList.addAll(state.data)
+            is DataState.SuccessCards -> {
+                cards.clear()
+                cards.addAll(state.data)
                 dataState.value = state
             }
             else -> dataState.value = state
@@ -97,38 +97,39 @@ fun SessionCardsScreen(navController: NavController) {
                 .padding(innerPadding)
                 .background(color = colorResource(id = R.color.no_comment_gray))
         ) {
-
-            when (val state = dataState.value) {
-                is DataState.Success -> {
-                    Column {
-                        ToggleArchived(showArchived)
+            Column {
+                if(dataState.value!=DataState.Loading){
+                    ToggleArchived(showArchived)
+                }
+                when (val state = dataState.value) {
+                    is DataState.Success -> {
                         //TODO: Prikazi listu kartica
                     }
-                }
 
-                is DataState.Failure -> Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(state.message, fontSize = MaterialTheme.typography.h5.fontSize)
-                }
+                    is DataState.Failure -> Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(state.message, fontSize = MaterialTheme.typography.h5.fontSize)
+                    }
 
-                DataState.Loading -> {
-                    LoadingAnimation()
-                    ProgressIndicator()
-                }
+                    DataState.Loading -> {
+                        LoadingAnimation()
+                        ProgressIndicator()
+                    }
 
-                DataState.Empty -> Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        "Nema kartica...",
-                        fontSize = MaterialTheme.typography.h5.fontSize
-                    )
-                }
+                    DataState.Empty -> Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            "Nema kartica...",
+                            fontSize = MaterialTheme.typography.h5.fontSize
+                        )
+                    }
 
-                else -> {}
+                    else -> {}
+                }
             }
             FloatingAddButton()
         }
