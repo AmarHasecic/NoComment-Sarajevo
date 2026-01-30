@@ -6,8 +6,10 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -38,37 +40,23 @@ fun BottomNavigationBar(navController: NavController) {
 
     val items = remember {
         listOf(
-            BottomNavItem(
-                label = "Home",
-                icon = R.drawable.skenderija_logo,
-                route = Screen.MainScreen.route
-            ),
-            BottomNavItem(
-                label = "10 termina",
-                icon = R.drawable.session_cards,
-                route = Screen.SessionCardsScreen.route
-            ),
-            BottomNavItem(
-                label = "Dodaj člana",
-                icon = R.drawable.add,
-                route = Screen.AddMemberScreen.route
-            ),
-            BottomNavItem(
-                label = "Grupe",
-                icon = R.drawable.group,
-                route = Screen.GroupsScreen.route
-            )
+            BottomNavItem("Home", R.drawable.skenderija_logo, Screen.MainScreen.route),
+            BottomNavItem("10 termina", R.drawable.session_cards, Screen.SessionCardsScreen.route),
+            BottomNavItem("Dodaj člana", R.drawable.add, Screen.AddMemberScreen.route),
+            BottomNavItem("Grupe", R.drawable.group, Screen.GroupsScreen.route)
         )
     }
 
-    BottomNavigation(
-        backgroundColor = Color.White,
-        modifier = Modifier.height(80.dp)
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(80.dp)
+            .background(Color.White),
+        verticalAlignment = Alignment.CenterVertically
     ) {
 
         items.forEach { item ->
             val selected = currentRoute == item.route
-            val iconPainter = painterResource(item.icon)
 
             Column(
                 modifier = Modifier
@@ -93,19 +81,21 @@ fun BottomNavigationBar(navController: NavController) {
                     modifier = Modifier.size(width = 75.dp, height = 40.dp),
                     contentAlignment = Alignment.Center
                 ) {
+
                     if (selected) {
                         Box(
                             modifier = Modifier
                                 .matchParentSize()
                                 .background(
-                                    colorResource(R.color.no_comment_highlight_green).copy(alpha = 0.9f),
+                                    colorResource(R.color.no_comment_highlight_green)
+                                        .copy(alpha = 0.9f),
                                     CircleShape
                                 )
                         )
                     }
 
                     Icon(
-                        painter = iconPainter,
+                        painter = painterResource(item.icon),
                         contentDescription = item.label,
                         tint = if (selected)
                             colorResource(R.color.no_comment_dark_gray)
