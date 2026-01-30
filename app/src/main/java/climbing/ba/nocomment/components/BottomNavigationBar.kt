@@ -15,6 +15,7 @@ import androidx.compose.material.BottomNavigation
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,80 +25,111 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import climbing.ba.nocomment.R
 import climbing.ba.nocomment.navigation.Screen
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
-    val currentRoute = navController.currentBackStackEntry?.destination?.route
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    val interactionSource = remember { MutableInteractionSource() }
+
+    val items = remember {
+        listOf(
+            BottomNavItem(
+                label = "Home",
+                icon = R.drawable.skenderija_logo,
+                route = Screen.MainScreen.route
+            ),
+            BottomNavItem(
+                label = "10 termina",
+                icon = R.drawable.session_cards,
+                route = Screen.SessionCardsScreen.route
+            ),
+            BottomNavItem(
+                label = "Dodaj člana",
+                icon = R.drawable.add,
+                route = Screen.AddMemberScreen.route
+            ),
+            BottomNavItem(
+                label = "Grupe",
+                icon = R.drawable.group,
+                route = Screen.GroupsScreen.route
+            )
+        )
+    }
 
     BottomNavigation(
         backgroundColor = Color.White,
         modifier = Modifier.height(80.dp)
     ) {
-        val items = listOf(
-            Triple(
-                "Home",
-                painterResource(id = R.drawable.skenderija_logo),
-                Screen.MainScreen.route
-            ),
-            Triple(
-                "10 termina",
-                painterResource(id = R.drawable.session_cards),
-                Screen.SessionCardsScreen.route
-            ),
-            Triple(
-                "Dodaj člana",
-                painterResource(id = R.drawable.add),
-                Screen.AddMemberScreen.route
-            ),
-            Triple("Grupe", painterResource(id = R.drawable.group), Screen.GroupsScreen.route)
-        )
 
-        items.forEach { (label, icon, route) ->
-            val selected = currentRoute == route
+        items.forEach { item ->
+            val selected = currentRoute == item.route
+            val iconPainter = painterResource(item.icon)
 
             Column(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxHeight()
                     .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
+                        interactionSource = interactionSource,
                         indication = null
-                    ) { navController.navigate(route) },
+                    ) {
+                        if (!selected) {
+                            navController.navigate(item.route) {
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
+                    },
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
+
                 Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.size(width = 75.dp, height = 40.dp)
+                    modifier = Modifier.size(width = 75.dp, height = 40.dp),
+                    contentAlignment = Alignment.Center
                 ) {
                     if (selected) {
                         Box(
                             modifier = Modifier
                                 .matchParentSize()
                                 .background(
-                                    color = Color(0xFFB8E6C7).copy(alpha = 0.9f),
-                                    shape = CircleShape
+                                    Color(0xFFB8E6C7).copy(alpha = 0.9f),
+                                    CircleShape
                                 )
                         )
                     }
+
                     Icon(
-                        painter = icon,
-                        contentDescription = label,
-                        tint = if (selected) colorResource(id = R.color.no_comment_dark_gray) else Color.Gray,
+                        painter = iconPainter,
+                        contentDescription = item.label,
+                        tint = if (selected)
+                            colorResource(R.color.no_comment_dark_gray)
+                        else Color.Gray,
                         modifier = Modifier.size(30.dp)
                     )
-
                 }
 
-                Spacer(modifier = Modifier.height(3.dp))
+                Spacer(Modifier.height(3.dp))
+
                 Text(
-                    text = label,
+                    text = item.label,
                     fontSize = 15.sp,
-                    color = if (selected) colorResource(id = R.color.no_comment_dark_gray) else Color.Gray
+                    color = if (selected)
+                        colorResource(R.color.no_comment_dark_gray)
+                    else Color.Gray
                 )
             }
         }
     }
 }
+
+private data class BottomNavItem(
+    val label: String,
+    val icon: Int,
+    val route: String
+)
