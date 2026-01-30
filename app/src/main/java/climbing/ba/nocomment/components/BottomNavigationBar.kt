@@ -98,7 +98,7 @@ fun BottomNavigationBar(navController: NavController) {
                             modifier = Modifier
                                 .matchParentSize()
                                 .background(
-                                    Color(0xFFB8E6C7).copy(alpha = 0.9f),
+                                    colorResource(R.color.no_comment_highlight_green).copy(alpha = 0.9f),
                                     CircleShape
                                 )
                         )

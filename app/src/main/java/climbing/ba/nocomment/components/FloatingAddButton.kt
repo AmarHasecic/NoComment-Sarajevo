@@ -33,7 +33,7 @@ fun FloatingAddButton() {
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = "Add",
-                tint = Color.White,
+                tint = colorResource(id = climbing.ba.nocomment.R.color.no_comment_gray),
                 modifier = Modifier.size(34.dp)
             )
         }

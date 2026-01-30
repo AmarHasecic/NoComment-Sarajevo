@@ -76,7 +76,7 @@ fun MainScreen(navController: NavController) {
         topBar = {
             Column(
                 modifier = Modifier.fillMaxWidth()
-                    .background(Color(0xFF0F8070))
+                    .background(colorResource(id = R.color.no_comment_green))
             ) {
                 Row(
                     modifier = Modifier

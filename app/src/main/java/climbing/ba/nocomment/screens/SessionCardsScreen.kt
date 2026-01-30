@@ -20,7 +20,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -31,6 +30,7 @@ import climbing.ba.nocomment.components.FloatingAddButton
 import climbing.ba.nocomment.components.LoadingAnimation
 import climbing.ba.nocomment.components.ProgressIndicator
 import climbing.ba.nocomment.components.SearchBar
+import climbing.ba.nocomment.components.ToggleArchived
 import climbing.ba.nocomment.database.fetchData
 import climbing.ba.nocomment.model.Member
 import climbing.ba.nocomment.sealed.DataState
@@ -41,6 +41,7 @@ fun SessionCardsScreen(navController: NavController) {
     val dataState = remember { mutableStateOf<DataState>(DataState.Loading) }
     val searchQuery = remember { mutableStateOf("") }
     val memberList = remember { mutableStateListOf<Member>() }
+    val showArchived = remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         val startTime = System.currentTimeMillis()
@@ -68,7 +69,7 @@ fun SessionCardsScreen(navController: NavController) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFF0F8070))
+                    .background(colorResource(id = R.color.no_comment_green))
             ) {
                 Row(
                     modifier = Modifier
@@ -96,10 +97,13 @@ fun SessionCardsScreen(navController: NavController) {
                 .padding(innerPadding)
                 .background(color = colorResource(id = R.color.no_comment_gray))
         ) {
-            FloatingAddButton()
+
             when (val state = dataState.value) {
                 is DataState.Success -> {
-                 //TODO: Prikazi listu kartica
+                    Column {
+                        ToggleArchived(showArchived)
+                        //TODO: Prikazi listu kartica
+                    }
                 }
 
                 is DataState.Failure -> Box(
@@ -126,6 +130,7 @@ fun SessionCardsScreen(navController: NavController) {
 
                 else -> {}
             }
+            FloatingAddButton()
         }
     }
 }
