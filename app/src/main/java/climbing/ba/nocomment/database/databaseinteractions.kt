@@ -227,14 +227,21 @@ suspend fun fetchTenSessionCards(): DataState {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
-fun useSession(card: TenSessionCard, sessionIndex: Int) {
-    if (sessionIndex in 0..9) {
-        val updatedSessions = card.sessions.toMutableList()
-        updatedSessions[sessionIndex] = updatedSessions[sessionIndex].copy(
-            isUsed = true,
-            date = LocalDate.now().toString()
-        )
-        card.sessions = updatedSessions
-    }
+fun archiveTenSessionCard(card: TenSessionCard, context: Context) {
+    val databaseReference = FirebaseDatabase.getInstance().reference
+    val cardReference = databaseReference
+        .child("tenSessionCards")
+        .child(card.id)
+
+    val updates = mapOf<String, Any>(
+        "archived" to true
+    )
+    cardReference.updateChildren(updates)
+        .addOnSuccessListener {
+            makeToast(context, "Kartica arhivirana ✅")
+        }
+        .addOnFailureListener { exception ->
+            makeToast(context, "Error: ${exception.message}")
+        }
 }
+

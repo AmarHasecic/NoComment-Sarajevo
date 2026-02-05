@@ -3,7 +3,6 @@ package climbing.ba.nocomment.model
 data class Session(
     var isUsed: Boolean = false,
     var date: String? = null
-
 )
 
 data class TenSessionCard(

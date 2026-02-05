@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -72,8 +73,8 @@ fun CardItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(260.dp)
-            .padding(10.dp)
+            .height(255.dp)
+            .padding(horizontal = 10.dp, vertical = 5.dp)
             .clickable { flipped.value = !flipped.value }
             .graphicsLayer { rotationY = rotation; cameraDistance = 12f * density },
         elevation = 4.dp,
@@ -89,7 +90,6 @@ fun CardItem(
                     showDialog = showDialog,
                     year = year,
                     onPaymentsChanged = { updatedPayments ->
-                        // Update member payments and propagate up
                         val updatedMember = member.copy(payments = updatedPayments)
                         onMemberUpdated(updatedMember)
                     }
@@ -101,17 +101,17 @@ fun CardItem(
     if (showDialog.value) {
         AlertDialog(
             onDismissRequest = { showDialog.value = false },
-            title = { Text("Delete") },
-            text = { Text("Do you want to delete this member?") },
+            title = { Text("Brisanje člana") },
+            text = { Text("Da li želite obrisati člana?") },
             confirmButton = {
                 Button(onClick = {
                     deleteMember(member, context)
                     showDialog.value = false
-                    onMemberDeleted(member) // Remove from main list
-                }) { Text("Yes") }
+                    onMemberDeleted(member)
+                }) { Text("Da") }
             },
             dismissButton = {
-                Button(onClick = { showDialog.value = false }) { Text("No") }
+                Button(onClick = { showDialog.value = false }) { Text("Ne") }
             }
         )
     }
@@ -228,8 +228,12 @@ fun BackSide(
             Text(
                 text = member.fullName,
                 color = Color.Black,
-                modifier = Modifier.padding(start = 10.dp),
-                fontSize = 22.sp
+                fontSize = 22.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 10.dp)
             )
 
             IconButton(onClick = { showDialog.value = true }) {
@@ -299,10 +303,7 @@ fun ButtonGrid(
                                     paymentsState.remove(payment)
                                 }
 
-                                // Update Firebase
                                 memberRef.child("payments").setValue(paymentsState)
-
-                                // Notify parent about payment change
                                 onPaymentsChanged(paymentsState.toList())
                             },
                         contentAlignment = Alignment.BottomCenter

@@ -1,5 +1,7 @@
 package climbing.ba.nocomment.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,9 +17,11 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -26,22 +30,41 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import climbing.ba.nocomment.R
 import climbing.ba.nocomment.components.BottomNavigationBar
+import climbing.ba.nocomment.components.CreateCardDialog
 import climbing.ba.nocomment.components.FloatingAddButton
 import climbing.ba.nocomment.components.LoadingAnimation
 import climbing.ba.nocomment.components.ProgressIndicator
 import climbing.ba.nocomment.components.SearchBar
+import climbing.ba.nocomment.components.ShowCardsLazyList
 import climbing.ba.nocomment.components.ToggleArchived
+import climbing.ba.nocomment.database.addTenSessionCard
 import climbing.ba.nocomment.database.fetchTenSessionCards
+import climbing.ba.nocomment.database.updateTenSessionCard
+import climbing.ba.nocomment.model.Session
 import climbing.ba.nocomment.model.TenSessionCard
 import climbing.ba.nocomment.sealed.DataState
 import kotlinx.coroutines.delay
 
+private fun checkIfArchived(card: TenSessionCard) : Boolean {
+  card.sessions.forEach() { session ->
+        if(!session.isUsed) {
+            return false
+        }
+    }
+    return true
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SessionCardsScreen(navController: NavController) {
     val dataState = remember { mutableStateOf<DataState>(DataState.Loading) }
     val searchQuery = remember { mutableStateOf("") }
     val cards = remember { mutableStateListOf<TenSessionCard>() }
     val showArchived = remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
+    var showDialogArchived by remember { mutableStateOf(false) }
+    val context = androidx.compose.ui.platform.LocalContext.current
+    var nameArchivedTemp by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
         val startTime = System.currentTimeMillis()
@@ -60,6 +83,7 @@ fun SessionCardsScreen(navController: NavController) {
                 dataState.value = state
             }
             else -> dataState.value = state
+
         }
     }
 
@@ -97,13 +121,37 @@ fun SessionCardsScreen(navController: NavController) {
                 .padding(innerPadding)
                 .background(color = colorResource(id = R.color.no_comment_gray))
         ) {
-            Column {
+            Column (
+                modifier = Modifier.fillMaxSize()
+            ){
                 if(dataState.value!=DataState.Loading){
                     ToggleArchived(showArchived)
                 }
                 when (val state = dataState.value) {
-                    is DataState.Success -> {
-                        //TODO: Prikazi listu kartica
+                    is DataState.SuccessCards -> {
+                        ShowCardsLazyList(
+                            cards = cards,
+                            showArchived = showArchived.value,
+                            searchQuery = searchQuery.value,
+
+                            onCardDeleted = { deletedCard ->
+                                cards.removeAll { it.id == deletedCard.id }
+                            },
+
+                            onCardChanged = { updatedCard ->
+                                val index = cards.indexOfFirst { it.id == updatedCard.id }
+
+                                if (index != -1) {
+                                    cards[index] = updatedCard
+                                }
+                                //to show dialog to create new card for archived member
+                                if(checkIfArchived(updatedCard)){
+                                    nameArchivedTemp = updatedCard.memberName
+                                    showDialogArchived = true
+                                }
+                                updateTenSessionCard(updatedCard, context)
+                            }
+                        )
                     }
 
                     is DataState.Failure -> Box(
@@ -117,7 +165,6 @@ fun SessionCardsScreen(navController: NavController) {
                         LoadingAnimation()
                         ProgressIndicator()
                     }
-
                     DataState.Empty -> Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -131,7 +178,55 @@ fun SessionCardsScreen(navController: NavController) {
                     else -> {}
                 }
             }
-            FloatingAddButton()
+            FloatingAddButton { showDialog = true }
+            CreateCardDialog(
+                showDialog = showDialog,
+                onDismiss = { showDialog = false },
+                onConfirm = { input ->
+                    showDialog = false
+
+                    if (input.isNotEmpty()) {
+                        val emptySessions = List(10) { Session() }
+                        val card = TenSessionCard(
+                            id = "",
+                            memberName = input,
+                            sessions = emptySessions,
+                            archived = false
+                        )
+                        cards.add(card)
+                        addTenSessionCard(card, context)
+                    }
+
+                }
+            )
+            CreateCardDialog(
+                showDialog = showDialogArchived,
+                onDismiss = {
+                    showDialogArchived = false
+                    nameArchivedTemp = ""
+                },
+                onConfirm = { input ->
+                    showDialogArchived = false
+
+                    if (input.isNotEmpty()) {
+                        val emptySessions = List(10) { Session() }
+                        val card = TenSessionCard(
+                            id = "",
+                            memberName = input,
+                            sessions = emptySessions,
+                            archived = false
+                        )
+                        cards.add(card)
+                        addTenSessionCard(card, context)
+                        nameArchivedTemp = ""
+                    }
+                },
+                name = nameArchivedTemp,
+                title = "Kartica arhivirana!",
+                message = "Da li želite kreirati novu karticu za istog člana?",
+                textAccept = "Da",
+                textDecline = "Ne"
+            )
         }
     }
 }

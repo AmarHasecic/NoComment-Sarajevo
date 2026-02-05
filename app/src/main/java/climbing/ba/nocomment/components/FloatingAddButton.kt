@@ -17,12 +17,12 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun FloatingAddButton() {
+fun FloatingAddButton(
+    onClick: () -> Unit
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         FloatingActionButton(
-            onClick = {
-                //TODO: Otvori dialog da se kreira kartica
-            },
+            onClick = onClick,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp)
