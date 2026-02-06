@@ -294,6 +294,7 @@ fun TenSessionCardButtonGrid(
                             Text(
                                 text = formattedDate ?: "",
                                 fontWeight = FontWeight.SemiBold,
+                                fontSize = 12.sp,
                                 color = colorResource(R.color.no_comment_dark_gray),
                                 modifier = Modifier.align(Alignment.BottomCenter)
                             )

@@ -6,13 +6,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.GenericShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedTextField
@@ -33,9 +35,9 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import climbing.ba.nocomment.R
+import climbing.ba.nocomment.components.SendEmailButton
 import climbing.ba.nocomment.database.fetchUsers
 import climbing.ba.nocomment.model.User
 import climbing.ba.nocomment.navigation.Screen
@@ -115,7 +117,7 @@ fun LoginScreen(navController: NavController){
                 onClick = {
                     matchedUser = userList.find { it.password == password }
                     if (matchedUser != null) {
-                        Toast.makeText(context, "Dobrodošao ${matchedUser!!.fullName}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Dobrodošao/la ${matchedUser!!.fullName}", Toast.LENGTH_LONG).show()
                         navController.navigate(Screen.MainScreen.route)
                     } else {
                         Toast.makeText(context, "Pogrešna šifra", Toast.LENGTH_SHORT).show()
@@ -131,19 +133,29 @@ fun LoginScreen(navController: NavController){
             ) {
                 Text("Login")
             }
-            Spacer(modifier = Modifier.height(35.dp))
-            Text(
-                text = "Napomena: Za pristup aplikaciji je potreban tajni kod koji možete dobiti samo od Amara Hasečića. Molimo vas da kontaktirate Amara kako biste zatražili pristup.",
-                fontSize = 12.sp,
-                color = Color.DarkGray,
+            Spacer(modifier = Modifier.height(16.dp))
+            SendEmailButton()
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp)
+                .align(Alignment.BottomCenter),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.no_comment_logo_black),
+                contentDescription = "Small Logo",
                 modifier = Modifier
-                    .fillMaxWidth(0.88f)
-                    .background(
-                        color = Color.Yellow.copy(alpha = 0.2f),
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .padding(12.dp)
+                    .size(50.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = "© 2023",
+                color = Color.Gray
             )
         }
+
     }
 }
