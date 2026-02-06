@@ -88,10 +88,12 @@ fun AddMemberScreen(navController: NavController) {
             ) {
                 Text(
                     text = "Registracija člana",
-                    style = MaterialTheme.typography.h4
+                    style = MaterialTheme.typography.h4,
+                    color = colorResource(R.color.no_comment_dark_gray)
                 )
                 Text(
                     text = "Ime člana je obavezno polje. Za kategorije juniori, napredni juniori i pubertetlije, potrebno je da se unesu podaci o roditelju.",
+                    color = colorResource(R.color.no_comment_dark_gray)
                 )
             }
 
