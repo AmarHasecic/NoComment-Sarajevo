@@ -20,7 +20,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -50,6 +52,11 @@ fun BottomNavigationBar(navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .height(80.dp)
+            .shadow(
+                elevation = 10.dp,
+                shape = RectangleShape,
+                clip = false
+            )
             .background(Color.White),
         verticalAlignment = Alignment.CenterVertically
     ) {
