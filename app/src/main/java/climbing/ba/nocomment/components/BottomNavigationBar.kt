@@ -53,7 +53,7 @@ fun BottomNavigationBar(navController: NavController) {
             .fillMaxWidth()
             .height(80.dp)
             .shadow(
-                elevation = 10.dp,
+                elevation = 20.dp,
                 shape = RectangleShape,
                 clip = false
             )

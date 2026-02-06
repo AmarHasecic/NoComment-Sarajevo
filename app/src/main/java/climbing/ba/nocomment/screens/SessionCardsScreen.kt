@@ -32,7 +32,6 @@ import climbing.ba.nocomment.R
 import climbing.ba.nocomment.components.BottomNavigationBar
 import climbing.ba.nocomment.components.CreateCardDialog
 import climbing.ba.nocomment.components.FloatingAddButton
-import climbing.ba.nocomment.components.LoadingAnimation
 import climbing.ba.nocomment.components.ProgressIndicator
 import climbing.ba.nocomment.components.SearchBar
 import climbing.ba.nocomment.components.ShowCardsLazyList
@@ -43,7 +42,6 @@ import climbing.ba.nocomment.database.updateTenSessionCard
 import climbing.ba.nocomment.model.Session
 import climbing.ba.nocomment.model.TenSessionCard
 import climbing.ba.nocomment.sealed.DataState
-import kotlinx.coroutines.delay
 
 private fun checkIfArchived(card: TenSessionCard) : Boolean {
   card.sessions.forEach() { session ->
@@ -67,16 +65,7 @@ fun SessionCardsScreen(navController: NavController) {
     var nameArchivedTemp by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
-        val startTime = System.currentTimeMillis()
-        val state = fetchTenSessionCards()
-        val elapsed = System.currentTimeMillis() - startTime
-        val minLoadingTime = 1700L
-        //Just for animation purposes
-        if (elapsed < minLoadingTime) {
-            delay(minLoadingTime - elapsed)
-        }
-
-        when (state) {
+        when (val state = fetchTenSessionCards()) {
             is DataState.SuccessCards -> {
                 cards.clear()
                 cards.addAll(state.data)
@@ -124,9 +113,7 @@ fun SessionCardsScreen(navController: NavController) {
             Column (
                 modifier = Modifier.fillMaxSize()
             ){
-                if(dataState.value!=DataState.Loading){
-                    ToggleArchived(showArchived)
-                }
+                ToggleArchived(showArchived)
                 when (val state = dataState.value) {
                     is DataState.SuccessCards -> {
                         ShowCardsLazyList(
@@ -162,7 +149,6 @@ fun SessionCardsScreen(navController: NavController) {
                     }
 
                     DataState.Loading -> {
-                        LoadingAnimation()
                         ProgressIndicator()
                     }
                     DataState.Empty -> Box(
