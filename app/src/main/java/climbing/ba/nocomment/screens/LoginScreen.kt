@@ -148,7 +148,7 @@ fun LoginScreen(navController: NavController){
                 painter = painterResource(id = R.drawable.no_comment_logo_black),
                 contentDescription = "Small Logo",
                 modifier = Modifier
-                    .size(50.dp)
+                    .size(60.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
